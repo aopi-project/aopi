@@ -18,14 +18,16 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
 
     def prepare(self) -> None:
-        def create_dir(filename: Union[Path, str]) -> None:
-            base_dir = os.path.dirname(filename)
+        def create_dir(filename: Union[Path, str], parent: bool = False) -> None:
+            base_dir = filename
+            if parent:
+                base_dir = os.path.dirname(filename)
             if not os.path.exists(base_dir):
                 os.makedirs(base_dir)
 
         create_dir(self.packages_dir)
-        create_dir(self.aopi_db_file)
-        create_dir(self.pid_file)
+        create_dir(self.aopi_db_file, True)
+        create_dir(self.pid_file, True)
 
     @classmethod
     def from_args(cls) -> "Settings":

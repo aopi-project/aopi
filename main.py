@@ -1,3 +1,5 @@
+from aopi.settings import settings
+
 try:
     from aopi.runners.gunicorn_runner import run_app
 except ImportError:
@@ -5,6 +7,7 @@ except ImportError:
 
 
 def main() -> None:
+    settings.pprint()
     run_app()
 
 
