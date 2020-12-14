@@ -13,14 +13,15 @@ from aiohttp.web_routedef import RouteTableDef
 from aiohttp.web_urldispatcher import View
 from loguru import logger
 
-from aopi.api.packages.models import PackageUploadModel, PackageVersion
+from aopi.api.simple.models import PackageUploadModel, PackageVersion
 from aopi.application.view import BaseView
 from aopi.settings import settings
 
 router = RouteTableDef()
+PREFIX = "/simple"
 
 
-@router.view("/")
+@router.view(PREFIX)
 class PackageUploadView(BaseView):
     @staticmethod
     async def save_file(path: Union[Path, str], file: FileField) -> None:
@@ -37,12 +38,13 @@ class PackageUploadView(BaseView):
             packages.append(pkg.name)
 
         return {
+            "prefix": PREFIX,
             "packages": packages,
         }
 
     async def post(self) -> web.Response:
         # TODO: Change package layout to:
-        # packages
+        # simple
         # └── package
         #     ├── 0.1.1
         #     ├── 0.1.2
@@ -75,7 +77,7 @@ class PackageUploadView(BaseView):
         return web.Response(status=201)
 
 
-@router.view("/{package_name}/")
+@router.view(f"{PREFIX}/{{package_name}}/")
 class PackageView(View):
     @staticmethod
     async def get_package_info(version_dir: Path) -> Optional[PackageVersion]:
@@ -99,12 +101,13 @@ class PackageView(View):
 
         return {
             "name": pkg_name,
+            "prefix": PREFIX,
             "versions": versions,
             "files_host": f"{self.request.scheme}://{self.request.host}",
         }
 
 
-@router.view("/packages/{pkg_name}/{version}/{type}/{pkg_file}")
+@router.view(f"{PREFIX}/files/{{pkg_name}}/{{version}}/{{type}}/{{pkg_file}}")
 class FileView(View):
     async def get(self) -> web.FileResponse:
         path_vars = self.request.match_info

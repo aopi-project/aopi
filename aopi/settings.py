@@ -9,7 +9,7 @@ from aopi.arg_parser import parse_args
 
 
 class Settings(BaseSettings):
-    packages_dir: Path = Field("/tmp/aopi/packages")
+    packages_dir: Path = Field("/tmp/aopi/simple")
     aopi_db_file: Path = Field("/tmp/aopi/db.sqlite")
     workers_count: int = 4
     pid_file: str = "/tmp/aopi/server.pid"

@@ -30,9 +30,9 @@ def parse_args() -> argparse.Namespace:
         "-d", "--database", type=str, dest="aopi_db_file", help="Database file"
     )
     parser.add_argument(
-        "--packages",
+        "--simple",
         type=str,
         dest="packages_dir",
-        help="Path to folder where to store actual packages",
+        help="Path to folder where to store actual simple",
     )
     return parser.parse_args()

@@ -6,7 +6,7 @@
 <body>
 <h1>Links for {{ name }}</h1>
 {% for version in versions %}
-    <a href="{{ files_host }}/packages/{{ name }}/{{ version.version }}/{{ version.filetype }}/{{ version.filename }}#sha256={{ version.sha256_digest }}"
+    <a href="{{ files_host }}{{ prefix }}/files/{{ name }}/{{ version.version }}/{{ version.filetype }}/{{ version.filename }}#sha256={{ version.sha256_digest }}"
             {% if version.requires_python %}
        data-requires-python="{{ version.requires_python }}"
             {% endif %}
