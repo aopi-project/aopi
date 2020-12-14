@@ -1,0 +1,10 @@
+<html lang="en">
+<h1>
+    Simple package index
+</h1>
+
+{% for package in packages %}
+    <a href="/{{ package }}/">{{ package }}</a><br>
+{% endfor %}
+
+</html>
