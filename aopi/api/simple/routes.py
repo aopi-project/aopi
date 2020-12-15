@@ -77,7 +77,6 @@ class PackageUploadView(BaseView):
         try:
             file_path = pkg_dir / upload.content.filename
             await self.save_file(file_path, upload.content)
-            # TODO: Parse readme and save it in version dir
             await self.update_info(version_dir=version_dir, upload=upload)
             await self.update_readme(
                 version_dir=version_dir, description=upload.description
