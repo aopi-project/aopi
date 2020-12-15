@@ -1,7 +1,8 @@
 import os
 import shutil
+from operator import attrgetter
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import aiohttp_jinja2
 import ujson
@@ -12,6 +13,7 @@ from aiohttp.web_request import FileField
 from aiohttp.web_routedef import RouteTableDef
 from aiohttp.web_urldispatcher import View
 from loguru import logger
+from natsort import natsorted
 
 from aopi.api.simple.models import PackageUploadModel, PackageVersion
 from aopi.application.view import BaseView
@@ -31,7 +33,31 @@ class PackageUploadView(BaseView):
         async with async_open(path, "wb") as f:
             await f.write(file.file.read())
 
-    @aiohttp_jinja2.template("index.jinja2")
+    @staticmethod
+    async def update_info(version_dir: Path, upload: PackageUploadModel) -> None:
+        info_path = version_dir / "info.json"
+        info_dict = {}
+        if info_path.exists():
+            async with async_open(info_path, "r") as f:
+                info_dict = ujson.loads(await f.read())
+        dist_info = upload.dict(exclude={"content"})
+        dist_info["filename"] = str(upload.content.filename)
+        info_dict[upload.filetype] = dist_info
+        async with async_open(info_path, "w") as f:
+            await f.write(ujson.dumps(info_dict))
+
+    @staticmethod
+    async def update_readme(version_dir: Path, description: str) -> None:
+        readme = version_dir / "README"
+        if readme.exists():
+            async with async_open(readme, "r") as f:
+                readme_text = await f.read()
+            if readme_text == description:
+                return
+        async with async_open(readme, "w") as f:
+            await f.write(description)
+
+    @aiohttp_jinja2.template("simple/index.jinja2")
     async def get(self) -> Dict[str, Any]:
         packages = []
         for pkg in settings.packages_dir.iterdir():
@@ -43,51 +69,44 @@ class PackageUploadView(BaseView):
         }
 
     async def post(self) -> web.Response:
-        # TODO: Change package layout to:
-        # simple
-        # └── package
-        #     ├── 0.1.1
-        #     ├── 0.1.2
-        #     ├── 0.1.3
-        #     ├── info.json
-        #     └── README.(md|rst)
         upload = PackageUploadModel.from_multidict(await self.request.post())
         version_dir = settings.packages_dir / upload.name / upload.version
         pkg_dir = version_dir / upload.filetype
         if pkg_dir.exists():
-            raise HTTPConflict(reason="Package already exists.")
+            raise HTTPConflict(reason="Distribution already exists.")
         try:
             file_path = pkg_dir / upload.content.filename
             await self.save_file(file_path, upload.content)
             # TODO: Parse readme and save it in version dir
-            info_path = pkg_dir / "info.json"
-            info_dict = upload.dict(exclude={"content"})
-            info_dict["filename"] = str(upload.content.filename)
-            async with async_open(info_path, "w") as f:
-                await f.write(ujson.dumps(info_dict))
+            await self.update_info(version_dir=version_dir, upload=upload)
+            await self.update_readme(
+                version_dir=version_dir, description=upload.description
+            )
         except Exception as e:
             logger.error(e)
-            shutil.rmtree(version_dir)
+            shutil.rmtree(pkg_dir)
             return web.Response(
                 status=400, reason="Something went wrong during saving."
             )
-        logger.debug(
-            f"Successfully uploaded {upload.name}:{upload.version}-{upload.filetype}"
-        )
+
         return web.Response(status=201)
 
 
 @router.view(f"{PREFIX}/{{package_name}}/")
 class PackageView(View):
     @staticmethod
-    async def get_package_info(version_dir: Path) -> Optional[PackageVersion]:
+    async def get_package_info(version_dir: Path) -> Optional[List[PackageVersion]]:
         info_file = version_dir / "info.json"
         if not info_file.exists():
             return None
+        packages = []
         async with async_open(info_file, "r") as f:
-            return PackageVersion(**ujson.loads(await f.read()))
+            dists_info = ujson.loads(await f.read())
+            for dist_name, file_info in dists_info.items():
+                packages.append(PackageVersion(**file_info))
+        return packages
 
-    @aiohttp_jinja2.template("package_versions.jinja2")
+    @aiohttp_jinja2.template("simple/package_versions.jinja2")
     async def get(self) -> Dict[str, Any]:
         pkg_name = self.request.match_info.get("package_name")
         pkg_dir = settings.packages_dir / pkg_name
@@ -95,14 +114,22 @@ class PackageView(View):
             raise HTTPNotFound(reason="Package was not found")
         versions = []
         for version_dir in pkg_dir.iterdir():
-            for dist_dir in version_dir.iterdir():
-                if package := await self.get_package_info(dist_dir):
-                    versions.append(package)
+            if packages := await self.get_package_info(version_dir):
+                versions.extend(packages)
+
+        versions = natsorted(versions, key=attrgetter("version"))
+        readme = str()
+        if len(versions) > 0:
+            last_version = versions[-1].version
+            readme_file = pkg_dir / last_version / "README"
+            async with async_open(readme_file, "r") as f:
+                readme = await f.read()
 
         return {
             "name": pkg_name,
             "prefix": PREFIX,
             "versions": versions,
+            "readme": readme,
             "files_host": f"{self.request.scheme}://{self.request.host}",
         }
 
