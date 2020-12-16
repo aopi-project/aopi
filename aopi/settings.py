@@ -5,12 +5,13 @@ from typing import Union
 from pydantic import BaseSettings, Field
 from tabulate import tabulate
 
-from aopi.arg_parser import parse_args
+from aopi.arg_parser import LogLevel, parse_args
 
 
 class Settings(BaseSettings):
     packages_dir: Path = Field("/tmp/aopi/packages")
     aopi_db_file: Path = Field("/tmp/aopi/db.sqlite")
+    log_level: LogLevel = Field(LogLevel.info)
     workers_count: int = 4
     pid_file: str = "/tmp/aopi/server.pid"
     reload: bool = False

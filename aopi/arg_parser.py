@@ -1,4 +1,16 @@
 import argparse
+from enum import Enum
+
+from argparse_utils import enum_action
+
+
+class LogLevel(str, Enum):
+    info = "INFO"
+    debug = "DEBUG"
+    error = "ERROR"
+    notset = "NOTSET"
+    warning = "WARNING"
+    critical = "CRITICAL"
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,5 +46,11 @@ def parse_args() -> argparse.Namespace:
         type=str,
         dest="packages_dir",
         help="Path to folder where to store actual simple",
+    )
+    parser.add_argument(
+        "--log-level",
+        action=enum_action(LogLevel, str.lower),
+        dest="log_level",
+        help="Logging level for application",
     )
     return parser.parse_args()
