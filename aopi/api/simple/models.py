@@ -1,3 +1,4 @@
+from enum import Enum, unique
 from typing import List, Optional, Union
 
 from aiohttp.web_request import FileField
@@ -7,34 +8,50 @@ from pydantic.fields import SHAPE_LIST
 from pydantic.main import BaseConfig, BaseModel
 
 
+@unique
+class ReadmeContentType(str, Enum):
+    MD = "text/markdown"
+    RST = "text/x-rst"
+    PLAIN = "text/plain"
+
+
 class PackageUploadModel(BaseModel):
     action: str = Field(..., alias=":action")
-    author: str
-    author_email: str
-    blake2_256_digest: str
-    classifiers: List[str]
-    comment: str
-    content: FileField
-    description: str
-    description_content_type: str
-    download_url: str
-    project_urls: str
-    filetype: str
-    home_page: str
-    keywords: str
-    license: str
-    maintainer: str
-    maintainer_email: str
-    md5_digest: str
-    metadata_version: str
     name: str
-    protocol_version: str
-    pyversion: str
-    requires_dist: Optional[List[str]]
-    requires_python: str
-    sha256_digest: str
-    summary: str
     version: str
+    filetype: str
+    md5_digest: str
+    sha256_digest: str
+    content: FileField
+    requires_python: str
+    metadata_version: float
+    protocol_version: str
+    # Optional dist fields
+    author: Optional[str]
+    summary: Optional[str]
+    blake2_256_digest: str
+    comment: Optional[str]
+    license: Optional[str]
+    keywords: Optional[str]
+    provides: Optional[str]
+    requires: Optional[str]
+    pyversion: Optional[str]
+    obsoletes: Optional[str]
+    home_page: Optional[str]
+    maintainer: Optional[str]
+    description: Optional[str]
+    author_email: Optional[str]
+    download_url: Optional[str]
+    provides_dist: Optional[str]
+    platform: Optional[List[str]]
+    obsoletes_dist: Optional[str]
+    maintainer_email: Optional[str]
+    classifiers: Optional[List[str]]
+    requires_external: Optional[str]
+    project_urls: Optional[List[str]]
+    requires_dist: Optional[List[str]]
+    supported_platform: Optional[List[str]]
+    description_content_type: Optional[ReadmeContentType]
 
     @classmethod
     def from_multidict(
@@ -44,9 +61,9 @@ class PackageUploadModel(BaseModel):
         for key in set(values.keys()):
             field = cls.__fields__.get(key)
             if field and field.shape == SHAPE_LIST:
-                formatted_dict[key] = values.getall(key)
+                formatted_dict[key] = values.getall(key) or None
             else:
-                formatted_dict[key] = values.getone(key)
+                formatted_dict[key] = values.getone(key) or None
 
         return PackageUploadModel(**formatted_dict)
 
@@ -54,7 +71,7 @@ class PackageUploadModel(BaseModel):
         arbitrary_types_allowed = True
 
 
-class PackageVersion(BaseModel):
+class PackageVersionModel(BaseModel):
     requires_python: Optional[str]
     sha256_digest: str
     version: str

@@ -15,7 +15,7 @@ from aiohttp.web_urldispatcher import View
 from loguru import logger
 from natsort import natsorted
 
-from aopi.api.simple.models import PackageUploadModel, PackageVersion
+from aopi.api.simple.models import PackageUploadModel, PackageVersionModel
 from aopi.application.view import BaseView
 from aopi.settings import settings
 
@@ -47,7 +47,9 @@ class PackageUploadView(BaseView):
             await f.write(ujson.dumps(info_dict))
 
     @staticmethod
-    async def update_readme(version_dir: Path, description: str) -> None:
+    async def update_readme(version_dir: Path, description: Optional[str]) -> None:
+        if description is None:
+            return
         readme = version_dir / "README"
         if readme.exists():
             async with async_open(readme, "r") as f:
@@ -82,8 +84,9 @@ class PackageUploadView(BaseView):
                 version_dir=version_dir, description=upload.description
             )
         except Exception as e:
-            logger.error(e)
-            shutil.rmtree(pkg_dir)
+            logger.exception(e)
+            if pkg_dir.exists():
+                shutil.rmtree(pkg_dir)
             return web.Response(
                 status=400, reason="Something went wrong during saving."
             )
@@ -94,7 +97,9 @@ class PackageUploadView(BaseView):
 @router.view(f"{PREFIX}/{{package_name}}/")
 class PackageView(View):
     @staticmethod
-    async def get_package_info(version_dir: Path) -> Optional[List[PackageVersion]]:
+    async def get_package_info(
+        version_dir: Path,
+    ) -> Optional[List[PackageVersionModel]]:
         info_file = version_dir / "info.json"
         if not info_file.exists():
             return None
@@ -102,7 +107,7 @@ class PackageView(View):
         async with async_open(info_file, "r") as f:
             dists_info = ujson.loads(await f.read())
             for dist_name, file_info in dists_info.items():
-                packages.append(PackageVersion(**file_info))
+                packages.append(PackageVersionModel(**file_info))
         return packages
 
     @aiohttp_jinja2.template("simple/package_versions.jinja2")
@@ -117,12 +122,13 @@ class PackageView(View):
                 versions.extend(packages)
 
         versions = natsorted(versions, key=attrgetter("version"))
-        readme = str()
+        readme = None
         if len(versions) > 0:
             last_version = versions[-1].version
             readme_file = pkg_dir / last_version / "README"
-            async with async_open(readme_file, "r") as f:
-                readme = await f.read()
+            if readme_file.exists():
+                async with async_open(readme_file, "r") as f:
+                    readme = await f.read()
 
         return {
             "name": pkg_name,
