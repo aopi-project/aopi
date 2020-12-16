@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 import orm
 
-from aopi.api.simple.models import PackageUploadModel
+from aopi.api.simple.models import DistInfoModel
 from aopi.models.meta import database, metadata
 
 
@@ -25,7 +25,7 @@ class Package(orm.Model):
     maintainer_email = orm.Text(allow_null=True)
 
     @staticmethod
-    def cast_upload_to_data(upload: PackageUploadModel) -> Dict[str, Any]:
+    def cast_dist_info_to_data(upload: DistInfoModel) -> Dict[str, Any]:
         return dict(
             name=upload.name,
             summary=upload.summary,
@@ -40,10 +40,10 @@ class Package(orm.Model):
         )
 
     @classmethod
-    async def create_by_upload(cls, upload: PackageUploadModel) -> "Package":
-        upload_dict = cls.cast_upload_to_data(upload)
+    async def create_by_dist_info(cls, upload: DistInfoModel) -> "Package":
+        upload_dict = cls.cast_dist_info_to_data(upload)
         return await cls.objects.create(**upload_dict)
 
-    async def update_by_upload(self, upload: PackageUploadModel) -> None:
-        upload_dict = self.cast_upload_to_data(upload)
+    async def update_by_dist_info(self, upload: DistInfoModel) -> None:
+        upload_dict = self.cast_dist_info_to_data(upload)
         await self.update(**upload_dict)

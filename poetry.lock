@@ -752,7 +752,7 @@ unix = ["gunicorn", "uvloop"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "99cb8ef04dd52a0d634874d8b224ec505eaa4390d1b10f4b0f1fa208c16a3fbf"
+content-hash = "8db49197c2a9ecf99dbaa19b8cf1506edad9c161176e0d80c3dc7c54b71505eb"
 
 [metadata.files]
 aiofile = [

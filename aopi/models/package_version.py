@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import orm
 
-from aopi.api.simple.models import PackageUploadModel
+from aopi.api.simple.models import DistInfoModel
 from aopi.models import Package
 from aopi.models.meta import database, metadata
 
@@ -36,21 +36,21 @@ class PackageVersion(orm.Model):
     python_version = orm.Text(allow_null=True)
 
     @staticmethod
-    def cast_upload_to_dict(upload: PackageUploadModel) -> Dict[str, Any]:
+    def cast_upload_to_dict(filename: str, upload: DistInfoModel) -> Dict[str, Any]:
         return dict(
             url=(
                 f"/aopi_files"
                 f"/{upload.name}"
                 f"/{upload.version}"
                 f"/{upload.filetype}"
-                f"/{upload.content.filename}"
+                f"/{filename}"
             ),
             version=upload.version,
             description=upload.description,
             comment_text=upload.comment,
             filetype=upload.filetype,
             metadata_version=upload.metadata_version,
-            filename=upload.content.filename,
+            filename=filename,
             md5_digest=upload.md5_digest,
             requires_python=upload.requires_python,
             sha256_digest=upload.sha256_digest,
@@ -64,8 +64,14 @@ class PackageVersion(orm.Model):
         )
 
     @classmethod
-    async def create_by_upload(
-        cls, *, package: Package, size: int, upload: PackageUploadModel
+    async def create_by_dist_info(
+        cls, *, filename: str, package: Package, size: int, dist_info: DistInfoModel
     ) -> "PackageVersion":
-        info_dict = cls.cast_upload_to_dict(upload)
+        info_dict = cls.cast_upload_to_dict(filename, dist_info)
         return await cls.objects.create(package=package, size=size, **info_dict)
+
+    async def update_by_dist_info(
+        self, *, filename: str, package: Package, size: int, dist_info: DistInfoModel
+    ) -> "PackageVersion":
+        info_dict = self.cast_upload_to_dict(filename, dist_info)
+        return await self.update(package=package, size=size, **info_dict)

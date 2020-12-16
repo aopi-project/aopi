@@ -15,21 +15,18 @@ class ReadmeContentType(str, Enum):
     PLAIN = "text/plain"
 
 
-class PackageUploadModel(BaseModel):
-    action: str = Field(..., alias=":action")
+class DistInfoModel(BaseModel):
     name: str
     version: str
     filetype: str
-    content: FileField
     metadata_version: float
-    # Optional dist fields
     md5_digest: Optional[str]
     sha256_digest: Optional[str]
     requires_python: Optional[str]
     protocol_version: Optional[str]
     author: Optional[str]
     summary: Optional[str]
-    blake2_256_digest: str
+    blake2_256_digest: Optional[str]
     comment: Optional[str]
     license: Optional[str]
     keywords: Optional[str]
@@ -53,6 +50,11 @@ class PackageUploadModel(BaseModel):
     description_content_type: Optional[ReadmeContentType]
     python_version: Optional[str] = Field(None, alias="pyversion")
 
+
+class PackageUploadModel(DistInfoModel):
+    action: str = Field(..., alias=":action")
+    content: FileField
+
     @classmethod
     def from_multidict(
         cls, values: MultiDictProxy[Union[str, bytes, FileField]]
@@ -69,11 +71,3 @@ class PackageUploadModel(BaseModel):
 
     class Config(BaseConfig):
         arbitrary_types_allowed = True
-
-
-class PackageVersionModel(BaseModel):
-    requires_python: Optional[str]
-    sha256_digest: str
-    version: str
-    filename: str
-    filetype: str

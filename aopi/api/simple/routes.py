@@ -18,9 +18,8 @@ from natsort import natsorted
 from orm import NoMatch
 from sqlalchemy.sql import Select
 
+from aopi import models
 from aopi.api.simple.models import PackageUploadModel
-from aopi.application.view import BaseView
-from aopi.models import Package, PackageVersion, database
 from aopi.settings import settings
 
 router = RouteTableDef()
@@ -28,7 +27,7 @@ PREFIX = "/simple"
 
 
 @router.view(PREFIX)
-class PackageUploadView(BaseView):
+class PackageUploadView(View):
     @staticmethod
     async def save_file(path: Union[Path, str], file: FileField) -> None:
         target_dir = os.path.dirname(path)
@@ -65,8 +64,8 @@ class PackageUploadView(BaseView):
 
     @aiohttp_jinja2.template("simple/index.jinja2")
     async def get(self) -> Dict[str, Any]:
-        select: Select = sqlalchemy.sql.select([Package.objects.table.c.name])
-        packages = map(itemgetter(0), await database.fetch_all(select))
+        select: Select = sqlalchemy.sql.select([models.Package.objects.table.c.name])
+        packages = map(itemgetter(0), await models.database.fetch_all(select))
         return {
             "prefix": PREFIX,
             "packages": packages,
@@ -76,7 +75,7 @@ class PackageUploadView(BaseView):
         upload = PackageUploadModel.from_multidict(await self.request.post())
         pkg_dir = settings.packages_dir / upload.name / upload.version / upload.filetype
         try:
-            await PackageVersion.objects.get(
+            await models.PackageVersion.objects.get(
                 package__name=upload.name,
                 version=upload.version,
                 filetype=upload.filetype,
@@ -85,18 +84,21 @@ class PackageUploadView(BaseView):
             raise HTTPConflict(reason="Distribution already exists.")
         except NoMatch:
             pass
-        package_exists = await Package.objects.filter(name=upload.name).exists()
+        package_exists = await models.Package.objects.filter(name=upload.name).exists()
         try:
             file_path = pkg_dir / upload.content.filename
             await self.save_file(file_path, upload.content)
             logger.debug(f"Saved package file {upload.name} {upload.filetype}")
             if package_exists:
-                package = await Package.objects.get(name=upload.name)
-                await package.update_by_upload(upload)
+                package = await models.Package.objects.get(name=upload.name)
+                await package.update_by_dist_info(upload)
             else:
-                package = await Package.create_by_upload(upload)
-            await PackageVersion.create_by_upload(
-                package=package, size=file_path.stat().st_size, upload=upload
+                package = await models.Package.create_by_dist_info(upload)
+            await models.PackageVersion.create_by_dist_info(
+                filename=upload.content.filename,
+                package=package,
+                size=file_path.stat().st_size,
+                dist_info=upload,
             )
         except Exception as e:
             logger.exception(e)
@@ -114,9 +116,9 @@ class PackageView(View):
     @aiohttp_jinja2.template("simple/package_versions.jinja2")
     async def get(self) -> Dict[str, Any]:
         pkg_name = self.request.match_info.get("package_name")
-        versions: List[PackageVersion] = await PackageVersion.objects.filter(
-            package__name=pkg_name
-        ).all()
+        versions: List[
+            models.PackageVersion
+        ] = await models.PackageVersion.objects.filter(package__name=pkg_name).all()
         if not versions:
             raise HTTPNotFound(reason="Package was not found")
         versions = natsorted(versions, key=attrgetter("version"))
