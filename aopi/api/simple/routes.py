@@ -1,10 +1,11 @@
 import os
 import shutil
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import aiohttp_jinja2
+import sqlalchemy
 import ujson
 from aiofile import async_open
 from aiohttp import web
@@ -14,9 +15,12 @@ from aiohttp.web_routedef import RouteTableDef
 from aiohttp.web_urldispatcher import View
 from loguru import logger
 from natsort import natsorted
+from orm import NoMatch
+from sqlalchemy.sql import Select
 
-from aopi.api.simple.models import PackageUploadModel, PackageVersionModel
+from aopi.api.simple.models import PackageUploadModel
 from aopi.application.view import BaseView
+from aopi.models import Package, PackageVersion, database
 from aopi.settings import settings
 
 router = RouteTableDef()
@@ -61,10 +65,8 @@ class PackageUploadView(BaseView):
 
     @aiohttp_jinja2.template("simple/index.jinja2")
     async def get(self) -> Dict[str, Any]:
-        packages = []
-        for pkg in settings.packages_dir.iterdir():
-            packages.append(pkg.name)
-
+        select: Select = sqlalchemy.sql.select([Package.objects.table.c.name])
+        packages = map(itemgetter(0), await database.fetch_all(select))
         return {
             "prefix": PREFIX,
             "packages": packages,
@@ -72,16 +74,29 @@ class PackageUploadView(BaseView):
 
     async def post(self) -> web.Response:
         upload = PackageUploadModel.from_multidict(await self.request.post())
-        version_dir = settings.packages_dir / upload.name / upload.version
-        pkg_dir = version_dir / upload.filetype
-        if pkg_dir.exists():
+        pkg_dir = settings.packages_dir / upload.name / upload.version / upload.filetype
+        try:
+            await PackageVersion.objects.get(
+                package__name=upload.name,
+                version=upload.version,
+                filetype=upload.filetype,
+            )
+            logger.debug(f"Failed to upload {upload.name}. Already exists.")
             raise HTTPConflict(reason="Distribution already exists.")
+        except NoMatch:
+            pass
+        package_exists = await Package.objects.filter(name=upload.name).exists()
         try:
             file_path = pkg_dir / upload.content.filename
             await self.save_file(file_path, upload.content)
-            await self.update_info(version_dir=version_dir, upload=upload)
-            await self.update_readme(
-                version_dir=version_dir, description=upload.description
+            logger.debug(f"Saved package file {upload.name} {upload.filetype}")
+            if package_exists:
+                package = await Package.objects.get(name=upload.name)
+                await package.update_by_upload(upload)
+            else:
+                package = await Package.create_by_upload(upload)
+            await PackageVersion.create_by_upload(
+                package=package, size=file_path.stat().st_size, upload=upload
             )
         except Exception as e:
             logger.exception(e)
@@ -96,40 +111,16 @@ class PackageUploadView(BaseView):
 
 @router.view(f"{PREFIX}/{{package_name}}/")
 class PackageView(View):
-    @staticmethod
-    async def get_package_info(
-        version_dir: Path,
-    ) -> Optional[List[PackageVersionModel]]:
-        info_file = version_dir / "info.json"
-        if not info_file.exists():
-            return None
-        packages = []
-        async with async_open(info_file, "r") as f:
-            dists_info = ujson.loads(await f.read())
-            for dist_name, file_info in dists_info.items():
-                packages.append(PackageVersionModel(**file_info))
-        return packages
-
     @aiohttp_jinja2.template("simple/package_versions.jinja2")
     async def get(self) -> Dict[str, Any]:
         pkg_name = self.request.match_info.get("package_name")
-        pkg_dir = settings.packages_dir / pkg_name
-        if not os.path.exists(pkg_dir):
+        versions: List[PackageVersion] = await PackageVersion.objects.filter(
+            package__name=pkg_name
+        ).all()
+        if not versions:
             raise HTTPNotFound(reason="Package was not found")
-        versions = []
-        for version_dir in pkg_dir.iterdir():
-            if packages := await self.get_package_info(version_dir):
-                versions.extend(packages)
-
         versions = natsorted(versions, key=attrgetter("version"))
-        readme = None
-        if len(versions) > 0:
-            last_version = versions[-1].version
-            readme_file = pkg_dir / last_version / "README"
-            if readme_file.exists():
-                async with async_open(readme_file, "r") as f:
-                    readme = await f.read()
-
+        readme = str() if not versions else versions[-1].description
         return {
             "name": pkg_name,
             "prefix": PREFIX,
@@ -139,7 +130,7 @@ class PackageView(View):
         }
 
 
-@router.view(f"{PREFIX}/files/{{pkg_name}}/{{version}}/{{type}}/{{pkg_file}}")
+@router.view("/aopi_files/{pkg_name}/{version}/{type}/{pkg_file}")
 class FileView(View):
     async def get(self) -> web.FileResponse:
         path_vars = self.request.match_info

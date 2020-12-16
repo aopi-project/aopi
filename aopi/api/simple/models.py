@@ -20,13 +20,13 @@ class PackageUploadModel(BaseModel):
     name: str
     version: str
     filetype: str
-    md5_digest: str
-    sha256_digest: str
     content: FileField
-    requires_python: str
     metadata_version: float
-    protocol_version: str
     # Optional dist fields
+    md5_digest: Optional[str]
+    sha256_digest: Optional[str]
+    requires_python: Optional[str]
+    protocol_version: Optional[str]
     author: Optional[str]
     summary: Optional[str]
     blake2_256_digest: str
@@ -35,7 +35,6 @@ class PackageUploadModel(BaseModel):
     keywords: Optional[str]
     provides: Optional[str]
     requires: Optional[str]
-    pyversion: Optional[str]
     obsoletes: Optional[str]
     home_page: Optional[str]
     maintainer: Optional[str]
@@ -52,6 +51,7 @@ class PackageUploadModel(BaseModel):
     requires_dist: Optional[List[str]]
     supported_platform: Optional[List[str]]
     description_content_type: Optional[ReadmeContentType]
+    python_version: Optional[str] = Field(None, alias="pyversion")
 
     @classmethod
     def from_multidict(
