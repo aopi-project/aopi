@@ -3,8 +3,7 @@ from typing import Any, Dict
 
 import orm
 
-from aopi.api.simple.models import DistInfoModel
-from aopi.models import Package
+from aopi.models import DistInfoModel, Package
 from aopi.models.meta import database, metadata
 
 

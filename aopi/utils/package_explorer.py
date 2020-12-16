@@ -7,7 +7,7 @@ from orm import NoMatch
 from pkginfo import SDist, Wheel
 
 from aopi import models
-from aopi.api.simple.models import DistInfoModel
+from aopi.models import DistInfoModel
 from aopi.settings import settings
 
 

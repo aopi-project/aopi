@@ -19,7 +19,6 @@ from orm import NoMatch
 from sqlalchemy.sql import Select
 
 from aopi import models
-from aopi.api.simple.models import PackageUploadModel
 from aopi.settings import settings
 
 router = RouteTableDef()
@@ -37,7 +36,7 @@ class PackageUploadView(View):
             await f.write(file.file.read())
 
     @staticmethod
-    async def update_info(version_dir: Path, upload: PackageUploadModel) -> None:
+    async def update_info(version_dir: Path, upload: models.PackageUploadModel) -> None:
         info_path = version_dir / "info.json"
         info_dict = {}
         if info_path.exists():
@@ -72,7 +71,7 @@ class PackageUploadView(View):
         }
 
     async def post(self) -> web.Response:
-        upload = PackageUploadModel.from_multidict(await self.request.post())
+        upload = models.PackageUploadModel.from_multidict(await self.request.post())
         pkg_dir = settings.packages_dir / upload.name / upload.version / upload.filetype
         try:
             await models.PackageVersion.objects.get(
