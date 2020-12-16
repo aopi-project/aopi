@@ -8,12 +8,12 @@ from gunicorn.config import Config
 from gunicorn.glogging import Logger
 from loguru import logger
 
+from aopi.arg_parser import LogLevel
 from aopi.settings import settings
 
 
 class InterceptHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
-        print(record.__class__)
         # Get corresponding Loguru level if it exists
         level: Optional[Union[str, int]] = None
         try:
@@ -68,21 +68,24 @@ class StandaloneApplication(BaseApplication):
 
 def run_app() -> None:
     intercept_handler = InterceptHandler()
-    logging.root.setLevel(settings.log_level.value)
+    logging.root.setLevel(LogLevel.error.value)
 
-    seen = set()
+    seen = {"sqlalchemy", "databases"}
     for name in [
         *logging.root.manager.loggerDict.keys(),  # type: ignore
         "gunicorn",
         "gunicorn.access",
         "gunicorn.error",
-        "uvicorn",
-        "uvicorn.access",
-        "uvicorn.error",
+        "aiohttp.access",
+        "aiohttp",
+        "aiohttp.server",
+        "aiohttp.web",
     ]:
         if name not in seen:
             seen.add(name.split(".")[0])
-            logging.getLogger(name).handlers = [intercept_handler]
+            tmp_logger = logging.getLogger(name)
+            tmp_logger.setLevel(settings.log_level.value)
+            tmp_logger.handlers = [intercept_handler]
 
     logger.configure(handlers=[{"sink": sys.stdout}])
 
@@ -90,7 +93,7 @@ def run_app() -> None:
         "bind": f"{settings.host}:{settings.port}",
         "workers": settings.workers_count,
         "worker_class": "aiohttp.worker.GunicornUVLoopWebWorker",
-        "pidfile": settings.pid_file,
+        "pidfile": str(settings.pid_file),
         "reload": settings.reload,
         "accesslog": "-",
         "errorlog": "-",

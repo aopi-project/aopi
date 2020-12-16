@@ -39,7 +39,7 @@ def parse_args() -> argparse.Namespace:
         "server application ID. (Only for Gunicorn workers)",
     )
     parser.add_argument(
-        "-d", "--database", type=str, dest="aopi_db_file", help="Database file"
+        "-d", "--database", type=str, dest="aopi_db_url", help="Database file"
     )
     parser.add_argument(
         "--simple",
