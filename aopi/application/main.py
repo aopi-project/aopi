@@ -1,25 +1,31 @@
-import aiohttp_jinja2
-import jinja2
-from aiohttp.web import Application
+from fastapi import FastAPI
 from loguru import logger
+from starlette.responses import UJSONResponse
 
-from aopi.api import routes
 from aopi.models import create_db
 from aopi.models.meta import database
 
 
-async def connect_db(_: Application) -> None:
+async def connect_db() -> None:
     await database.connect()
     logger.info("Database connected")
 
 
-def get_application() -> Application:
-    app = Application()
-    app.add_routes(routes=routes)
-    app.on_startup.append(connect_db)
-    logger.debug("Routes mounted")
+async def startup() -> None:
+    await connect_db()
+
+
+def get_application() -> FastAPI:
+    from aopi.api import router
+
+    app = FastAPI(
+        title="Another One Package Index",
+        default_response_class=UJSONResponse,
+    )
     create_db()
     logger.debug("DB initialized")
-    aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader("./aopi/templates"))
+    app.on_event("startup")(startup)
+    app.include_router(router)
+    logger.debug("Routes mounted")
     logger.info("Worker is up")
     return app

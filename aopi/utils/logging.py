@@ -34,17 +34,14 @@ def configure_logging() -> None:
     logger.add(sys.stderr, level=settings.log_level.value)
     logging.root.setLevel(LogLevel.error.value)
 
-    seen = {"sqlalchemy", "databases"}
+    seen = {"sqlalchemy", "databases", "aiosqlite"}
     for name in [
         *logging.root.manager.loggerDict.keys(),  # type: ignore
         "aopi",
         "gunicorn",
         "gunicorn.access",
         "gunicorn.error",
-        "aiohttp.access",
-        "aiohttp",
-        "aiohttp.server",
-        "aiohttp.web",
+        "uvicorn" "uvicorn.access",
     ]:
         if name not in seen:
             seen.add(name.split(".")[0])

@@ -1,11 +1,11 @@
 from enum import Enum, unique
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from aiohttp.web_request import FileField
-from multidict import MultiDictProxy
+from fastapi import File, UploadFile
 from pydantic import Field
-from pydantic.fields import SHAPE_LIST
 from pydantic.main import BaseConfig, BaseModel
+
+from aopi.utils.pydantic_form import as_form
 
 
 @unique
@@ -51,23 +51,11 @@ class DistInfoModel(BaseModel):
     python_version: Optional[str] = Field(None, alias="pyversion")
 
 
+@as_form
 class PackageUploadModel(DistInfoModel):
     action: str = Field(..., alias=":action")
-    content: FileField
-
-    @classmethod
-    def from_multidict(
-        cls, values: MultiDictProxy[Union[str, bytes, FileField]]
-    ) -> "PackageUploadModel":
-        formatted_dict = dict()
-        for key in set(values.keys()):
-            field = cls.__fields__.get(key)
-            if field and field.shape == SHAPE_LIST:
-                formatted_dict[key] = values.getall(key) or None
-            else:
-                formatted_dict[key] = values.getone(key) or None
-
-        return PackageUploadModel(**formatted_dict)
+    content: UploadFile = File(...)
 
     class Config(BaseConfig):
         arbitrary_types_allowed = True
+        allow_population_by_field_name = True

@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, Optional
 
-from aiohttp.web_app import Application
+from fastapi import FastAPI
 from gunicorn.app.base import BaseApplication
 from gunicorn.config import Config
 from gunicorn.glogging import Logger
@@ -37,7 +37,7 @@ class StandaloneApplication(BaseApplication):
         for key, value in config.items():
             self.cfg.set(key.lower(), value)
 
-    def load(self) -> Application:
+    def load(self) -> FastAPI:
         from aopi.application import get_application
 
         return get_application()
@@ -47,7 +47,7 @@ def run_app() -> None:
     options = {
         "bind": f"{settings.host}:{settings.port}",
         "workers": settings.workers_count,
-        "worker_class": "aiohttp.worker.GunicornUVLoopWebWorker",
+        "worker_class": "uvicorn.workers.UvicornWorker",
         "pidfile": str(settings.pid_file),
         "reload": settings.reload,
         "accesslog": "-",

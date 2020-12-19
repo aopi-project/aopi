@@ -15,7 +15,6 @@ class PackageVersion(orm.Model):
     id = orm.Integer(primary_key=True)
     package = orm.ForeignKey(Package)
 
-    url = orm.Text()
     size = orm.Integer()
     version = orm.Text()
     requires_python = orm.Text()
@@ -37,13 +36,6 @@ class PackageVersion(orm.Model):
     @staticmethod
     def cast_upload_to_dict(filename: str, upload: DistInfoModel) -> Dict[str, Any]:
         return dict(
-            url=(
-                f"/aopi_files"
-                f"/{upload.name}"
-                f"/{upload.version}"
-                f"/{upload.filetype}"
-                f"/{filename}"
-            ),
             version=upload.version,
             description=upload.description,
             comment_text=upload.comment,
