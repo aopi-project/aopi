@@ -11,4 +11,5 @@ def run_app() -> None:
         port=settings.port,
         reload=settings.reload,
         workers=settings.workers_count,
+        log_config=None,
     )

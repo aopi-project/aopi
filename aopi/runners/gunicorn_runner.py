@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI
 from gunicorn.app.base import BaseApplication
 from gunicorn.config import Config
 from gunicorn.glogging import Logger
@@ -37,10 +36,10 @@ class StandaloneApplication(BaseApplication):
         for key, value in config.items():
             self.cfg.set(key.lower(), value)
 
-    def load(self) -> FastAPI:
-        from aopi.application import get_application
+    def load(self) -> Any:
+        import aopi.application
 
-        return get_application()
+        return aopi.application.get_application()
 
 
 def run_app() -> None:

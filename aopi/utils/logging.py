@@ -41,10 +41,14 @@ def configure_logging() -> None:
         "gunicorn",
         "gunicorn.access",
         "gunicorn.error",
-        "uvicorn" "uvicorn.access",
+        "fastapi",
+        "uvicorn",
+        "uvicorn.server",
+        "uvicorn.access",
+        "uvicorn.error",
     ]:
         if name not in seen:
-            seen.add(name.split(".")[0])
+            seen.add(name)
             tmp_logger = logging.getLogger(name)
             tmp_logger.setLevel(settings.log_level.value)
             tmp_logger.handlers = [intercept_handler]
