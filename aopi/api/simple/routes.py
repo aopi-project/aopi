@@ -21,7 +21,7 @@ router = APIRouter()
 PREFIX = "/simple"
 
 
-@router.get(f"{PREFIX}/", response_class=HTMLResponse)
+@router.get(f"{PREFIX}", response_class=HTMLResponse)
 async def simple_index_page(request: Request) -> templates.TemplateResponse:
     select: Select = sqlalchemy.sql.select([models.Package.objects.table.c.name])
     packages = map(itemgetter(0), await models.database.fetch_all(select))

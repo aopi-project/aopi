@@ -2,7 +2,6 @@ import inspect
 from typing import Any, Dict, Type
 
 from fastapi import File, Form
-from loguru import logger
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
@@ -31,7 +30,6 @@ def as_form(cls: Type[BaseModel]) -> Type[BaseModel]:
         )
 
     async def as_form_func(**data: Dict[str, Any]) -> BaseModel:
-        logger.debug(data)
         return cls(**data)
 
     sig = inspect.signature(as_form_func)
