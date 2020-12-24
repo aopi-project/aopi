@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
         "--reload",
         action="store_true",
         dest="reload",
-        help="Reload application on change (Only for Gunicorn workers)",
+        help="Reload application on change (Development only)",
     )
     parser.add_argument(
         "-w",

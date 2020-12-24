@@ -3,7 +3,7 @@ name = "aiofile"
 version = "3.3.3"
 description = "Asynchronous file operations."
 category = "main"
-optional = false
+optional = true
 python-versions = ">3.4.*, <4"
 
 [package.dependencies]
@@ -39,7 +39,7 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "aopi-index-builder"
-version = "0.1.19"
+version = "0.1.22"
 description = "Package to build new package indices for AOPI"
 category = "main"
 optional = false
@@ -60,14 +60,14 @@ SQLAlchemy = "^1.3.22"
 type = "git"
 url = "https://github.com/aopi-project/aopi_index_builder"
 reference = "master"
-resolved_reference = "b64cf077826ea4b8a7e6825e079ed1431140fa18"
+resolved_reference = "ebc4f2562cfb4b9f539f88275ffbd1dff0dbe131"
 
 [[package]]
 name = "aopi-python"
-version = "0.1.11"
+version = "0.1.13"
 description = ""
 category = "main"
-optional = false
+optional = true
 python-versions = "^3.9"
 develop = false
 
@@ -82,7 +82,7 @@ ujson = "^4.0.1"
 type = "git"
 url = "https://github.com/aopi-project/aopi_python"
 reference = "master"
-resolved_reference = "077ddf8f5b260fcda721e6bcc539dece98be0b31"
+resolved_reference = "baf9353cb76d0b0795a30f8ab11563419e205231"
 
 [[package]]
 name = "argparse-utils"
@@ -148,7 +148,7 @@ name = "caio"
 version = "0.6.3"
 description = "Asynchronous file IO for Linux Posix and Windows."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.5.*, <4"
 
 [package.extras]
@@ -343,7 +343,7 @@ i18n = ["Babel (>=0.8)"]
 
 [[package]]
 name = "keyring"
-version = "21.5.0"
+version = "21.7.0"
 description = "Store and access your passwords safely."
 category = "main"
 optional = false
@@ -394,7 +394,7 @@ name = "natsort"
 version = "7.1.0"
 description = "Simple yet flexible natural sorting in Python."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.4"
 
 [package.extras]
@@ -788,12 +788,13 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [extras]
 mysql = ["aiomysql", "mysqlclient"]
 postgre = ["asyncpg", "psycopg2"]
+python = ["aopi-python"]
 unix = ["gunicorn", "uvloop"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6a80b9a19b113d0cf446cd096dd25420df7e8939661199ad18e581c61f6a03b8"
+content-hash = "cf5aa2ed9455ea6fe4a1ca9e16a7dd6e11edb55fda1a205c8d91acd9c847ef52"
 
 [metadata.files]
 aiofile = [
@@ -990,8 +991,8 @@ jinja2 = [
     {file = "Jinja2-2.11.2.tar.gz", hash = "sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0"},
 ]
 keyring = [
-    {file = "keyring-21.5.0-py3-none-any.whl", hash = "sha256:12de23258a95f3b13e5b167f7a641a878e91eab8ef16fafc077720a95e6115bb"},
-    {file = "keyring-21.5.0.tar.gz", hash = "sha256:207bd66f2a9881c835dad653da04e196c678bf104f8252141d2d3c4f31051579"},
+    {file = "keyring-21.7.0-py3-none-any.whl", hash = "sha256:4c41ce4f6d1ee91d589a346699ef5a94ba3429603ac8f700cc0097644cdd6748"},
+    {file = "keyring-21.7.0.tar.gz", hash = "sha256:a144f7e1044c897c3976202af868cb0ac860f4d433d5d0f8e750fa1a2f0f0b50"},
 ]
 loguru = [
     {file = "loguru-0.5.3-py3-none-any.whl", hash = "sha256:f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c"},

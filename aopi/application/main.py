@@ -24,22 +24,20 @@ def init_plugins(app: FastAPI) -> None:
         )
     )
     plugins = load_plugins()
-    template_loaders = []
     logger.info(f"Found {len(plugins)} plugins.")
     for plugin in plugins:
         index = plugin.package_index
-        template_loaders.append(index.template_loader)
         logger.debug(
             f"Enabling plugin {plugin.plugin_name} "
             f"from {plugin.package_name}:{plugin.package_version}"
         )
         app.include_router(
-            router=index.router, prefix=index.prefix, tags=[plugin.plugin_name]
+            router=index.router, prefix=plugin.prefix, tags=[plugin.package_name]
         )
 
 
 def get_application() -> FastAPI:
-    from aopi.api import router
+    from aopi.routes import router
 
     app = FastAPI(
         title="Another One Package Index",
