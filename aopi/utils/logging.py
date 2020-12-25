@@ -52,5 +52,3 @@ def configure_logging() -> None:
             tmp_logger = logging.getLogger(name)
             tmp_logger.setLevel(settings.log_level.value)
             tmp_logger.handlers = [intercept_handler]
-
-    logger.configure(handlers=[{"sink": sys.stdout}])

@@ -6,6 +6,7 @@ from starlette.responses import UJSONResponse
 from aopi.models import create_db
 from aopi.models.meta import database, metadata
 from aopi.settings import settings
+from aopi.utils.logging import configure_logging
 
 
 async def connect_db() -> None:
@@ -39,6 +40,7 @@ def init_plugins(app: FastAPI) -> None:
 def get_application() -> FastAPI:
     from aopi.routes import router
 
+    configure_logging()
     app = FastAPI(
         title="Another One Package Index",
         default_response_class=UJSONResponse,
