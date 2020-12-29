@@ -43,6 +43,7 @@ class StandaloneApplication(BaseApplication):
 
 
 def run_app() -> None:
+    settings.pprint()
     options = {
         "bind": f"{settings.host}:{settings.port}",
         "workers": settings.workers_count,

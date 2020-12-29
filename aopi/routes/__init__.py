@@ -1,3 +1,3 @@
-from fastapi import APIRouter
+from aopi.routes.ui import ui_router
 
-router = APIRouter()
+__all__ = ["ui_router"]

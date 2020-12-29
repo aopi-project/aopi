@@ -1,6 +1,3 @@
-from aopi.settings import settings
-from aopi.utils.logging import configure_logging
-
 try:
     from aopi.runners.gunicorn_runner import run_app
 except ImportError:
@@ -8,8 +5,6 @@ except ImportError:
 
 
 def main() -> None:
-    settings.pprint()
-    configure_logging()
     run_app()
 
 

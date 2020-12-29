@@ -51,4 +51,6 @@ def configure_logging() -> None:
             seen.add(name)
             tmp_logger = logging.getLogger(name)
             tmp_logger.setLevel(settings.log_level.value)
+            tmp_logger.handlers.clear()
+            tmp_logger.propagate = False
             tmp_logger.handlers = [intercept_handler]

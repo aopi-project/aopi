@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aopi login</title>
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+<body>
+<form action="{{ url_for('aopi_user_login') }}" method="POST">
+    <label for="user_username">Your username</label>
+    <input type="text" id="user_username" name="username">
+    <label for="user_password">Your password</label>
+    <input type="password" id="user_password" name="password">
+    <input type="submit">
+</form>
+</body>
+</html>

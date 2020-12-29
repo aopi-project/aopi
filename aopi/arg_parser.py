@@ -54,4 +54,11 @@ def parse_args() -> argparse.Namespace:
         dest="log_level",
         help="Logging level for application",
     )
+    parser.add_argument(
+        "-n",
+        "--no-ui",
+        action="store_true",
+        dest="no_ui",
+        help="Turn off aopi web-interface",
+    )
     return parser.parse_args()

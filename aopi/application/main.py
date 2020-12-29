@@ -2,10 +2,12 @@ from aopi_index_builder import AopiContextBase, init_context, load_plugins
 from fastapi import FastAPI
 from loguru import logger
 from starlette.responses import UJSONResponse
+from starlette.staticfiles import StaticFiles
 
 from aopi.models import create_db
 from aopi.models.meta import database, metadata
 from aopi.settings import settings
+from aopi.ui import static_path
 from aopi.utils.logging import configure_logging
 
 
@@ -38,7 +40,7 @@ def init_plugins(app: FastAPI) -> None:
 
 
 def get_application() -> FastAPI:
-    from aopi.routes import router
+    from aopi.routes import ui_router
 
     configure_logging()
     app = FastAPI(
@@ -49,7 +51,9 @@ def get_application() -> FastAPI:
     create_db()
     logger.debug("DB initialized")
     app.on_event("startup")(startup)
-    app.include_router(router)
+    if not settings.no_ui:
+        app.include_router(ui_router, tags=["UI"])
+        app.mount("/static", StaticFiles(directory=static_path), name="static")
     logger.debug("Routes mounted")
     logger.info("Worker is up")
     return app

@@ -4,6 +4,7 @@ from aopi.settings import settings
 
 
 def run_app() -> None:
+    settings.pprint()
     uvicorn.run(
         app="aopi.application:get_application",
         factory=True,

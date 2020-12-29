@@ -1,10 +1,8 @@
 import sqlalchemy
 
 from aopi.models.meta import database, metadata
-from aopi.models.user import User
 
 __all__ = [
-    "User",
     "create_db",
     "database",
 ]
