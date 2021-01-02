@@ -8,15 +8,15 @@ from starlette.status import HTTP_303_SEE_OTHER
 
 from aopi.ui import templates
 
-router = APIRouter()
+ui_router = APIRouter()
 
 
-@router.get("/")
+@ui_router.get("/")
 def aopi_index_page(request: Request) -> templates.TemplateResponse:
     return templates.TemplateResponse("main/index.jinja2", {"request": request})
 
 
-@router.get("/login")
+@ui_router.get("/login")
 def aopi_login_page(
     request: Request, error: Optional[str] = None
 ) -> templates.TemplateResponse:
@@ -24,7 +24,7 @@ def aopi_login_page(
     return templates.TemplateResponse("main/login.jinja2", {"request": request})
 
 
-@router.post("/user/login")
+@ui_router.post("/user/login")
 async def aopi_user_login(
     request: Request,
     username: str = Form(...),

@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     port: int = 8000
     host: str = "0.0.0.0"
     no_ui: bool = False
+    enable_users: bool = False
 
     def prepare(self) -> None:
         def create_dir(filename: Union[Path, str], parent: bool = False) -> None:

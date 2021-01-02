@@ -28,8 +28,9 @@ aiomysql = { version = "^0.0.21", optional = true }
 gunicorn = { version = "^20.0.4", optional = true }
 mysqlclient = { version = "^2.0.2", optional = true }
 aopi-index-builder = { git = "https://github.com/aopi-project/aopi_index_builder" }
-aopi-python = { git = "https://github.com/aopi-project/aopi_python", optional = true }
+aopi-python = { path = "../aopi-python", optional = true }
 aiofiles = "^0.6.0"
+argon2-cffi = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"

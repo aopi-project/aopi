@@ -61,4 +61,10 @@ def parse_args() -> argparse.Namespace:
         dest="no_ui",
         help="Turn off aopi web-interface",
     )
+    parser.add_argument(
+        "-u" "--users",
+        action="store_true",
+        dest="enable_users",
+        help="Enable user system",
+    )
     return parser.parse_args()
