@@ -4,34 +4,12 @@ from starlette.responses import UJSONResponse
 from starlette.staticfiles import StaticFiles
 
 from aopi.application.plugin_manager import plugin_manager
-from aopi.models import AopiUser, create_db
-from aopi.models.meta import database
+from aopi.application.startup import startup
+from aopi.models import create_db
 from aopi.routes import api_router
 from aopi.settings import settings
 from aopi.ui import static_path
 from aopi.utils.logging import configure_logging
-from aopi.utils.passwords import hash_password
-
-
-async def connect_db() -> None:
-    await database.connect()
-    logger.info("Database connected")
-
-
-async def fill_db() -> None:
-    if settings.enable_users:
-        hashed_pass = await hash_password("admin")
-        insert_query = AopiUser.create("admin", hashed_pass)
-        try:
-            await database.execute(insert_query)
-        except Exception as e:
-            logger.error(e)
-        logger.warning(plugin_manager.get_roles())
-
-
-async def startup() -> None:
-    await connect_db()
-    await fill_db()
 
 
 def get_application() -> FastAPI:
