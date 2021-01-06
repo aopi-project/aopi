@@ -1,5 +1,6 @@
 import argparse
 from enum import Enum
+from pathlib import Path
 
 from argparse_utils import enum_action
 
@@ -66,5 +67,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         dest="enable_users",
         help="Enable user system",
+    )
+    parser.add_argument(
+        "--secret-file",
+        type=Path,
+        dest="secret_file",
+        help="Path to file where secret stored",
     )
     return parser.parse_args()

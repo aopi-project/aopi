@@ -3,7 +3,7 @@ from collections import defaultdict
 from loguru import logger
 
 from aopi.application.plugin_manager import plugin_manager
-from aopi.models import AopiRole, AopiUser
+from aopi.models import AopiRole, AopiUser, AopiUserRole
 from aopi.models.dict_proxy import DictProxy
 from aopi.models.meta import database
 from aopi.settings import settings
@@ -34,7 +34,6 @@ async def create_missing_roles() -> None:
     """
     Find missing roles in database and add them.
 
-    :return: nothing
     """
     existing_roles = map(DictProxy, await database.fetch_all(AopiRole.select_query()))
     existing_mapping = defaultdict(list)
@@ -42,11 +41,30 @@ async def create_missing_roles() -> None:
         existing_mapping[role.plugin_name].append(role.role)
     missing_roles = list()
     for plugin in plugin_manager.plugins_map.values():
-        existing_plugin_roles = set(existing_mapping.get(plugin.plugin_name) or [])
+        existing_plugin_roles = set(existing_mapping.get(plugin.package_name) or [])
         for role in set(plugin.roles) - existing_plugin_roles:
-            missing_roles.append({"plugin_name": plugin.plugin_name, "role": role})
+            missing_roles.append({"plugin_name": plugin.package_name, "role": role})
     logger.debug(f"Found {len(missing_roles)} missing roles.")
     await database.execute_many(AopiRole.insert_query(), missing_roles)
+
+
+async def add_roles_to_admin() -> None:
+    """
+    Add all roles from database to admin.
+
+    """
+    find_query = AopiUser.find("admin", AopiUser.id)
+    user_id = await database.fetch_val(find_query)
+    admin_roles = AopiUserRole.get_user_roles(user_id, AopiRole.id)
+    missing_roles = AopiRole.select_query(AopiRole.id).where(
+        ~AopiRole.id.in_(admin_roles)
+    )
+    roles = [
+        {"role_id": role.id, "user_id": user_id}
+        for role in map(DictProxy, await database.fetch_all(missing_roles))
+    ]
+    logger.debug(f"Found {len(roles)} missing roles for admin user")
+    await database.execute_many(AopiUserRole.insert_query(), roles)
 
 
 async def fill_db() -> None:
@@ -54,11 +72,11 @@ async def fill_db() -> None:
     Create necessary items on startup.
     Like admin user and missing roles from plugins.
 
-    :return:
     """
     if settings.enable_users:
         await create_admin()
         await create_missing_roles()
+        await add_roles_to_admin()
 
 
 async def startup() -> None:

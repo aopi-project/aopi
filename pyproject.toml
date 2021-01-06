@@ -31,6 +31,7 @@ aopi-index-builder = { git = "https://github.com/aopi-project/aopi_index_builder
 aopi-python = { git = "https://github.com/aopi-project/aopi_python", optional = true }
 aiofiles = "^0.6.0"
 argon2-cffi = "^20.1.0"
+fastapi-jwt-auth = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"

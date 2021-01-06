@@ -1,3 +1,4 @@
+import re
 from typing import Any, Tuple, Type, Union
 
 import databases
@@ -20,7 +21,13 @@ class Base(object):
 
     @declared_attr
     def __tablename__(self) -> str:
-        return self.__name__.lower()
+        """
+        Converts CamelCase class name to snake_case table name.
+
+        :return table name in snake_case.
+        """
+        name = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", self.__name__)
+        return re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
 
     @declared_attr
     def id(self) -> Any:

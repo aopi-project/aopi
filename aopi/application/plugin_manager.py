@@ -3,14 +3,13 @@ from typing import Optional
 from aopi_index_builder import AopiContextBase, PluginManager
 from loguru import logger
 
-from aopi.models import AopiUser, database, metadata
+from aopi.models import AopiUser, AopiUserRole, database, metadata
 from aopi.models.dict_proxy import DictProxy
 from aopi.settings import settings
 from aopi.utils.passwords import verify_password
 
 
 async def get_user_id(username: str, password: str) -> Optional[int]:
-    logger.debug(f"{username} trying to connect with {password}")
     query = AopiUser.find(username, AopiUser.id, AopiUser.password)
     user = DictProxy(await database.fetch_one(query))
     if user.is_none():
@@ -21,8 +20,11 @@ async def get_user_id(username: str, password: str) -> Optional[int]:
 
 
 async def check_user_permission(plugin: str, user_id: int, role: str) -> bool:
-    logger.info(f"{plugin}, {user_id}, {role}")
-    return True
+    logger.debug(plugin)
+    test_query = AopiUserRole.has_role(user=user_id, plugin_name=plugin, role=role)
+    logger.debug(test_query)
+    perms = await database.fetch_val(test_query)
+    return perms
 
 
 plugin_manager = PluginManager(

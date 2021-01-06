@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="/static/main.css">
 </head>
 <body>
+{%  if error -%}
+    <div style="color: darkred">
+        {{ error }}
+    </div>
+{% endif %}
+
 <form action="{{ url_for('aopi_user_login') }}" method="POST">
     <label for="user_username">Your username</label>
     <input type="text" id="user_username" name="username">

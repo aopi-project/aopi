@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 class DictProxy:
     def __init__(self, values: Optional[Dict[str, Any]]) -> None:
         self.__init_dict = values
+        self.__obj_dict = dict()
         if values is None:
             return
         obj_dict = dict()
