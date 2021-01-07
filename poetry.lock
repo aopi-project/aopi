@@ -47,7 +47,7 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "aopi-index-builder"
-version = "0.1.33"
+version = "0.1.39"
 description = "Package to build new package indices for AOPI"
 category = "main"
 optional = false
@@ -67,11 +67,11 @@ SQLAlchemy = "^1.3.22"
 type = "git"
 url = "https://github.com/aopi-project/aopi_index_builder"
 reference = "master"
-resolved_reference = "0fb361a6f1044739829d4de2efdf84fe2305ce62"
+resolved_reference = "f900543ac515e3f234f0bede70876cbf82e26f44"
 
 [[package]]
 name = "aopi-python"
-version = "0.1.20"
+version = "0.1.21"
 description = ""
 category = "main"
 optional = true
@@ -90,7 +90,7 @@ ujson = "^4.0.1"
 type = "git"
 url = "https://github.com/aopi-project/aopi_python"
 reference = "master"
-resolved_reference = "d3fb63cf11a2ecc4ed6bffaaae494af52e15e102"
+resolved_reference = "14499d180890a9e891e1193f55c7f07deefe3ea4"
 
 [[package]]
 name = "argon2-cffi"
