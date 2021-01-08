@@ -52,4 +52,5 @@ repos:
         language: system
         pass_filenames: false
         require_serial: true
+        files: ^frontend/
         entry: yarn --cwd frontend/ lint
