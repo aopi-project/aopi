@@ -40,7 +40,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install python dependencies 👨🏻‍💻
-        uses: knowsuchagency/poetry-install@v1
+        run: |
+          pip install -U pip
+          pip install poetry
+          poetry install
         env:
           POETRY_VIRTUALENVS_CREATE: false
 
