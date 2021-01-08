@@ -10,11 +10,6 @@ from aopi.settings import settings
 from aopi.utils.passwords import hash_password
 
 
-async def connect_db() -> None:
-    await database.connect()
-    logger.info("Database connected")
-
-
 async def create_admin() -> None:
     """
     Create admin user if it's not exits.
@@ -80,5 +75,10 @@ async def fill_db() -> None:
 
 
 async def startup() -> None:
-    await connect_db()
+    await database.connect()
+    logger.info("Database connected")
     await fill_db()
+
+
+async def shutdown() -> None:
+    await database.disconnect()

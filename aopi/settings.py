@@ -2,7 +2,7 @@ import os
 import secrets
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Set, Union
+from typing import Union
 
 from databases import DatabaseURL
 from loguru import logger
@@ -14,17 +14,12 @@ from aopi.arg_parser import LogLevel, parse_args
 TEMP_DIR = Path(gettempdir())
 
 
-class JWTSettings(BaseModel):
-    authjwt_secret_key: str = ""
-    authjwt_token_location: Set[str] = {"cookies"}
-    authjwt_cookie_csrf_protect = True
-
-
-class APPSettings(BaseModel):
+class Settings(BaseModel):
     packages_dir: Path = Field(TEMP_DIR / "aopi/packages")
     aopi_db_url: str = Field(f"sqlite:///{TEMP_DIR}/aopi/db.sqlite")
     pid_file: Path = Field(TEMP_DIR / "aopi/server.pid")
     secret_file: Path = Field(TEMP_DIR / "aopi/secret")
+    jwt_secret: str = ""
     log_level: LogLevel = Field(LogLevel.info)
     workers_count: int = 4
     reload: bool = False
@@ -33,10 +28,8 @@ class APPSettings(BaseModel):
     no_ui: bool = False
     enable_users: bool = False
 
-
-class Settings(APPSettings, JWTSettings):
     def prepare(self) -> None:
-        def create_dir(filename: Union[Path, str], parent: bool = False) -> None:
+        def create_dir(filename: Union[Path, str], parent: bool = True) -> None:
             base_dir = filename
             if parent:
                 base_dir = os.path.dirname(filename)
@@ -44,15 +37,15 @@ class Settings(APPSettings, JWTSettings):
                 logger.debug(f"Creating directory {base_dir}")
                 os.makedirs(base_dir)
 
-        create_dir(self.packages_dir)
-        create_dir(self.pid_file, True)
-        create_dir(self.secret_file, True)
+        create_dir(self.pid_file)
+        create_dir(self.secret_file)
+        create_dir(self.packages_dir, False)
         db_url = DatabaseURL(self.aopi_db_url)
         if db_url.dialect == "sqlite" and db_url.hostname is None:
             create_dir(db_url.database, True)
         if not self.secret_file.exists():
             self.secret_file.write_text(secrets.token_urlsafe(128))
-        self.authjwt_secret_key = self.secret_file.read_text()
+        self.jwt_secret = self.secret_file.read_text()
 
     @classmethod
     def from_args(cls) -> "Settings":
@@ -62,7 +55,7 @@ class Settings(APPSettings, JWTSettings):
 
     def pprint(self) -> None:
         print("Current settings:")
-        safe_data = self.dict(exclude={"authjwt_secret_key"})
+        safe_data = self.dict(exclude={"jwt_secret"})
         print(tabulate(safe_data.items(), stralign="left", tablefmt="plain"))
         print()
 

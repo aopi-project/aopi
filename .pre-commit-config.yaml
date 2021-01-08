@@ -45,3 +45,11 @@ repos:
           - "--tc"
           - "--up"
           - "--force-grid-wrap=0"
+  - repo: local
+    hooks:
+      - id: lint_frontend
+        name: Linting frontend
+        language: system
+        pass_filenames: false
+        require_serial: true
+        entry: yarn --cwd frontend/ lint

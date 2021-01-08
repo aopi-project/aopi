@@ -7,6 +7,12 @@ name = "aopi"
 version = "0.1.6"
 description = ""
 authors = ["Pavel Kirilin <win10@list.ru>"]
+packages = [
+    { include = "aopi" },
+]
+include = [
+    "frontend/dist"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
