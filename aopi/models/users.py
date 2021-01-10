@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from pydantic.main import BaseConfig, BaseModel
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from aopi.models.meta import Base
@@ -15,3 +16,12 @@ class AopiUser(Base):
     @classmethod
     def find(cls, username: str, *fields: InstrumentedAttribute) -> sa.sql.Select:
         return cls.select_query(*fields).where(AopiUser.username == username)
+
+
+class AopiUserModel(BaseModel):
+    id: int
+    username: str
+    password: str
+
+    class Config(BaseConfig):
+        orm_mode = True

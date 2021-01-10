@@ -5,9 +5,10 @@ from aopi_index_builder import (
     PluginFullPackageInfo,
     PluginPackagePreview,
 )
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from aopi.application.plugin_manager import plugin_manager
+from aopi.routes.api.auth.dependencies import get_current_user_id
 
 packages_router = APIRouter()
 
@@ -23,8 +24,8 @@ async def find_package(
     name: str = "",
     limit: int = 100,
     language: Optional[str] = None,
+    user_id: Optional[int] = Depends(get_current_user_id),
 ) -> List[PluginPackagePreview]:
-    user_id = None
     return await plugin_manager.find_package(
         page=page, limit=limit, user_id=user_id, package_name=name, language=language
     )
@@ -34,8 +35,8 @@ async def find_package(
 async def get_package_info(
     plugin_name: str,
     package_id: Any,
+    user_id: Optional[int] = Depends(get_current_user_id),
 ) -> PluginFullPackageInfo:
-    user_id = None
     info = await plugin_manager.get_package_info(
         user_id=user_id, plugin_name=plugin_name, package_id=package_id
     )
@@ -46,9 +47,10 @@ async def get_package_info(
 
 @packages_router.get("/versions", response_model=List[PackageVersion])
 async def get_package_versions(
-    plugin_name: str, package_id: Any
+    plugin_name: str,
+    package_id: Any,
+    user_id: Optional[int] = Depends(get_current_user_id),
 ) -> List[PackageVersion]:
-    user_id = None
     return await plugin_manager.get_package_versions(
         user_id=user_id, plugin_name=plugin_name, package_id=package_id
     )
