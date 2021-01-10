@@ -21,7 +21,10 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: [
+    '~/plugins/axios.client.js',
+    { ssr: false, src: '~plugins/backend_settings' },
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -43,35 +46,47 @@ export default {
     '@nuxtjs/auth-next',
   ],
 
-  strategies: {
-    local: {
-      scheme: 'refresh',
-      token: {
-        property: 'access_token',
-        maxAge: 60 * 15,
-        type: 'Bearer',
+  auth: {
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        token: {
+          property: 'access_token',
+          maxAge: 60 * 30,
+          type: 'Bearer',
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 60 * 24 * 30,
+        },
+        user: {
+          property: false,
+        },
+        endpoints: {
+          login: { url: '/auth/login', method: 'post' },
+          refresh: { url: '/auth/refresh', method: 'post' },
+          user: { url: '/auth/user', method: 'get' },
+          logout: { url: '/auth/logout', method: 'post' },
+        },
+        // autoLogout: false
       },
-      refreshToken: {
-        property: 'refresh_token',
-        data: 'refresh_token',
-        maxAge: 60 * 60 * 24 * 30,
-      },
-      user: {
-        property: 'user',
-        // autoFetch: true
-      },
-      endpoints: {
-        login: { url: '/api/auth/login', method: 'post' },
-        refresh: { url: '/api/auth/refresh', method: 'post' },
-        user: { url: '/api/auth/user', method: 'get' },
-        logout: { url: '/api/auth/logout', method: 'post' },
-      },
-      // autoLogout: false
+    },
+    localStorage: {
+      prefix: 'auth.',
+    },
+    redirect: {
+      login: '/login',
+      logout: '/',
+      callback: '/login',
+      home: '/',
     },
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    browserBaseURL: process.env.BROWSER_BASE_URL,
+  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

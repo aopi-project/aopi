@@ -2,3 +2,22 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+.w-100 {
+  width: 100%;
+}
+
+.mw-40{
+  max-width: 40%;
+}
+
+.mw-60{
+  max-width: 60%;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}

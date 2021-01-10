@@ -20,6 +20,7 @@ class Settings(BaseModel):
     pid_file: Path = Field(TEMP_DIR / "aopi/server.pid")
     secret_file: Path = Field(TEMP_DIR / "aopi/secret")
     jwt_secret: str = ""
+    jwt_algorithm: str = "HS256"
     log_level: LogLevel = Field(LogLevel.info)
     workers_count: int = 4
     reload: bool = False
