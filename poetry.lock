@@ -1,18 +1,4 @@
 [[package]]
-name = "aiofile"
-version = "3.3.3"
-description = "Asynchronous file operations."
-category = "main"
-optional = true
-python-versions = ">3.4.*, <4"
-
-[package.dependencies]
-caio = ">=0.6.0,<0.7.0"
-
-[package.extras]
-develop = ["aiomisc", "asynctest", "pytest", "pytest-cov"]
-
-[[package]]
 name = "aiofiles"
 version = "0.6.0"
 description = "File support for asyncio."
@@ -47,50 +33,20 @@ typing_extensions = ">=3.7.2"
 
 [[package]]
 name = "aopi-index-builder"
-version = "0.1.39"
+version = "0.1.40"
 description = "Package to build new package indices for AOPI"
 category = "main"
 optional = false
-python-versions = "^3.9"
-develop = false
+python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
-databases = "^0.4.1"
-entrypoints = "^0.3"
-fastapi = "^0.63.0"
-Jinja2 = "^2.11.2"
-loguru = "^0.5.3"
-pydantic = "^1.7.3"
-SQLAlchemy = "^1.3.22"
-
-[package.source]
-type = "git"
-url = "https://github.com/aopi-project/aopi_index_builder"
-reference = "master"
-resolved_reference = "f900543ac515e3f234f0bede70876cbf82e26f44"
-
-[[package]]
-name = "aopi-python"
-version = "0.1.21"
-description = ""
-category = "main"
-optional = true
-python-versions = "^3.9"
-develop = false
-
-[package.dependencies]
-aiofile = "^3.3.3"
-aopi-index-builder = "branch master"
-loguru = "^0.5.3"
-natsort = "^7.1.0"
-orm = "^0.1.5"
-ujson = "^4.0.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/aopi-project/aopi_python"
-reference = "master"
-resolved_reference = "14499d180890a9e891e1193f55c7f07deefe3ea4"
+databases = ">=0.4.1,<0.5.0"
+entrypoints = ">=0.3,<0.4"
+fastapi = ">=0.63.0,<0.64.0"
+Jinja2 = ">=2.11.2,<3.0.0"
+loguru = ">=0.5.3,<0.6.0"
+pydantic = ">=1.7.3,<2.0.0"
+SQLAlchemy = ">=1.3.22,<2.0.0"
 
 [[package]]
 name = "appdirs"
@@ -175,17 +131,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 packaging = "*"
 six = ">=1.9.0"
 webencodings = "*"
-
-[[package]]
-name = "caio"
-version = "0.6.3"
-description = "Asynchronous file IO for Linux Posix and Windows."
-category = "main"
-optional = true
-python-versions = ">=3.5.*, <4"
-
-[package.extras]
-develop = ["aiomisc", "pytest", "pytest-cov"]
 
 [[package]]
 name = "certifi"
@@ -370,7 +315,7 @@ test = ["Cython (==0.29.14)"]
 
 [[package]]
 name = "identify"
-version = "1.5.11"
+version = "1.5.12"
 description = "File identification library for Python"
 category = "dev"
 optional = false
@@ -469,36 +414,12 @@ optional = true
 python-versions = ">=3.5"
 
 [[package]]
-name = "natsort"
-version = "7.1.0"
-description = "Simple yet flexible natural sorting in Python."
-category = "main"
-optional = true
-python-versions = ">=3.4"
-
-[package.extras]
-fast = ["fastnumbers (>=2.0.0)"]
-icu = ["PyICU (>=1.0.0)"]
-
-[[package]]
 name = "nodeenv"
 version = "1.5.0"
 description = "Node.js virtual environment builder"
 category = "dev"
 optional = false
 python-versions = "*"
-
-[[package]]
-name = "orm"
-version = "0.1.5"
-description = "An async ORM."
-category = "main"
-optional = true
-python-versions = "*"
-
-[package.dependencies]
-databases = ">=0.2.1"
-typesystem = "*"
 
 [[package]]
 name = "packaging"
@@ -747,7 +668,7 @@ idna2008 = ["idna"]
 
 [[package]]
 name = "rsa"
-version = "4.6"
+version = "4.7"
 description = "Pure-Python RSA implementation"
 category = "main"
 optional = false
@@ -828,7 +749,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "tqdm"
-version = "4.55.1"
+version = "4.56.0"
 description = "Fast, Extensible Progress Meter"
 category = "main"
 optional = false
@@ -855,14 +776,6 @@ requests = ">=2.20"
 requests-toolbelt = ">=0.8.0,<0.9.0 || >0.9.0"
 rfc3986 = ">=1.4.0"
 tqdm = ">=4.14"
-
-[[package]]
-name = "typesystem"
-version = "0.2.4"
-description = "A type system library for Python"
-category = "main"
-optional = true
-python-versions = ">=3.6"
 
 [[package]]
 name = "typing-extensions"
@@ -918,7 +831,7 @@ python-versions = "*"
 
 [[package]]
 name = "virtualenv"
-version = "20.2.2"
+version = "20.3.0"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -932,7 +845,7 @@ six = ">=1.9.0,<2"
 
 [package.extras]
 docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)", "towncrier (>=19.9.0rc1)"]
-testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "pytest-xdist (>=1.31.0)", "packaging (>=20.0)", "xonsh (>=0.9.16)"]
+testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "packaging (>=20.0)", "xonsh (>=0.9.16)"]
 
 [[package]]
 name = "webencodings"
@@ -956,19 +869,14 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [extras]
 mysql = ["aiomysql", "mysqlclient"]
 postgre = ["asyncpg", "psycopg2"]
-python = ["aopi-python"]
 unix = ["gunicorn", "uvloop"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1ebd27da09d52f9ea93fb65661875da5c25b14004dec67b9061228d56299954f"
+content-hash = "f23f7411212fde687d303703166c6726ad54f5714962ca7fec6697a7b50e7c97"
 
 [metadata.files]
-aiofile = [
-    {file = "aiofile-3.3.3-py3-none-any.whl", hash = "sha256:df8bed76db02948594711cff22d774f9b7d3b3ad132de05a8f3cd60ab8108894"},
-    {file = "aiofile-3.3.3.tar.gz", hash = "sha256:50cb8aad220e78b39910101a22540246385f0e011c6064d190d548a7c5d6464b"},
-]
 aiofiles = [
     {file = "aiofiles-0.6.0-py3-none-any.whl", hash = "sha256:bd3019af67f83b739f8e4053c6c0512a7f545b9a8d91aaeab55e6e0f9d123c27"},
     {file = "aiofiles-0.6.0.tar.gz", hash = "sha256:e0281b157d3d5d59d803e3f4557dcc9a3dff28a4dd4829a9ff478adae50ca092"},
@@ -981,8 +889,10 @@ aiosqlite = [
     {file = "aiosqlite-0.16.0-py3-none-any.whl", hash = "sha256:0e5b8465b0b6aa7f2b0a1fa7f3af53216fcea1947f524b658bd4b4696e72f1b7"},
     {file = "aiosqlite-0.16.0.tar.gz", hash = "sha256:d014ef07fbc523b2d195fc17cf35982285e3220eb73c1068d5df37b569950ea8"},
 ]
-aopi-index-builder = []
-aopi-python = []
+aopi-index-builder = [
+    {file = "aopi_index_builder-0.1.40-py3-none-any.whl", hash = "sha256:2761f981ebe200d23807a0b6b9b870cd1f42f0a44179796b298e138501158a99"},
+    {file = "aopi_index_builder-0.1.40.tar.gz", hash = "sha256:e74790bb0e24b08cac411022d4edf2b1cd4a994a6a8f2241aead2ecb4c1d8188"},
+]
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
@@ -1047,19 +957,6 @@ attrs = [
 bleach = [
     {file = "bleach-3.2.1-py2.py3-none-any.whl", hash = "sha256:9f8ccbeb6183c6e6cddea37592dfb0167485c1e3b13b3363bc325aa8bda3adbd"},
     {file = "bleach-3.2.1.tar.gz", hash = "sha256:52b5919b81842b1854196eaae5ca29679a2f2e378905c346d3ca8227c2c66080"},
-]
-caio = [
-    {file = "caio-0.6.3-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:b12915f20630d8b67b5b0c1747bc62f9aac285859a63d84f79bd2973973644f8"},
-    {file = "caio-0.6.3-cp35-cp35m-manylinux2010_x86_64.whl", hash = "sha256:215fc6c7d8535282da4fc5180886e44ef7d76b0d568f77576b092ed0fcb00434"},
-    {file = "caio-0.6.3-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:912d4bd328fb85d48e9c784c784f5a79deed558ffc4b4c3e144886ca9a560aba"},
-    {file = "caio-0.6.3-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:8a364cc86e9d1942354327d5a635136280a8150c5e0dc5bc38a08acd57442f9c"},
-    {file = "caio-0.6.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:ab5fed3ef626c38fc7783e03557040712182fea483aa8037fe13bd886a592545"},
-    {file = "caio-0.6.3-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:b25ad180c8f2a3c11b630e1bc4235931cc09d7754c9a8c8d9926af6ec9ad3e3a"},
-    {file = "caio-0.6.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:44b822d0cfa8ac4a1b62a124306d104bd7088069ffce007846541bd77ba0bae5"},
-    {file = "caio-0.6.3-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:1b939a522a859db442cf8a90eb7159a19db4431d319855168c90444398af65aa"},
-    {file = "caio-0.6.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:45b607a9d029e6168257ee24d36c0ce594d9d4051f0ca34b7cc580d0056ce4cf"},
-    {file = "caio-0.6.3-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:021f58a8fece4760dc031eb817a7586c91e82ea593c1d2c70369baf76c4b53ad"},
-    {file = "caio-0.6.3.tar.gz", hash = "sha256:68de3c4565eff381829fce18afb21658ffb2afdcd7f72f3d4d79b99560e4976e"},
 ]
 certifi = [
     {file = "certifi-2020.12.5-py2.py3-none-any.whl", hash = "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"},
@@ -1185,8 +1082,8 @@ httptools = [
     {file = "httptools-0.1.1.tar.gz", hash = "sha256:41b573cf33f64a8f8f3400d0a7faf48e1888582b6f6e02b82b9bd4f0bf7497ce"},
 ]
 identify = [
-    {file = "identify-1.5.11-py2.py3-none-any.whl", hash = "sha256:7aef7a5104d6254c162990e54a203cdc0fd202046b6c415bd5d636472f6565c4"},
-    {file = "identify-1.5.11.tar.gz", hash = "sha256:b2c71bf9f5c482c389cef816f3a15f1c9d7429ad70f497d4a2e522442d80c6de"},
+    {file = "identify-1.5.12-py2.py3-none-any.whl", hash = "sha256:18994e850ba50c37bcaed4832be8b354d6a06c8fb31f54e0e7ece76d32f69bc8"},
+    {file = "identify-1.5.12.tar.gz", hash = "sha256:892473bf12e655884132a3a32aca737a3cbefaa34a850ff52d501773a45837bc"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -1254,16 +1151,9 @@ mysqlclient = [
     {file = "mysqlclient-2.0.3-cp39-cp39-win_amd64.whl", hash = "sha256:fc575093cf81b6605bed84653e48b277318b880dc9becf42dd47fa11ffd3e2b6"},
     {file = "mysqlclient-2.0.3.tar.gz", hash = "sha256:f6ebea7c008f155baeefe16c56cd3ee6239f7a5a9ae42396c2f1860f08a7c432"},
 ]
-natsort = [
-    {file = "natsort-7.1.0-py3-none-any.whl", hash = "sha256:161dfaa30a820a4a274d4eab1f693300990a1be05ae5724af0cc6d3b530fc979"},
-    {file = "natsort-7.1.0.tar.gz", hash = "sha256:33f3f1003e2af4b4df20908fe62aa029999d136b966463746942efbfc821add3"},
-]
 nodeenv = [
     {file = "nodeenv-1.5.0-py2.py3-none-any.whl", hash = "sha256:5304d424c529c997bc888453aeaa6362d242b6b4631e90f3d4bf1b290f1c84a9"},
     {file = "nodeenv-1.5.0.tar.gz", hash = "sha256:ab45090ae383b716c4ef89e690c41ff8c2b257b85b309f01f3654df3d084bd7c"},
-]
-orm = [
-    {file = "orm-0.1.5.tar.gz", hash = "sha256:37cb4757b670c1713f4e0d65874c5afe819acbd712abb9743c97e1d4b00d511c"},
 ]
 packaging = [
     {file = "packaging-20.8-py2.py3-none-any.whl", hash = "sha256:24e0da08660a87484d1602c30bb4902d74816b6985b93de36926f5bc95741858"},
@@ -1400,8 +1290,8 @@ rfc3986 = [
     {file = "rfc3986-1.4.0.tar.gz", hash = "sha256:112398da31a3344dc25dbf477d8df6cb34f9278a94fee2625d89e4514be8bb9d"},
 ]
 rsa = [
-    {file = "rsa-4.6-py3-none-any.whl", hash = "sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233"},
-    {file = "rsa-4.6.tar.gz", hash = "sha256:109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa"},
+    {file = "rsa-4.7-py3-none-any.whl", hash = "sha256:a8774e55b59fd9fc893b0d05e9bfc6f47081f46ff5b46f39ccf24631b7be356b"},
+    {file = "rsa-4.7.tar.gz", hash = "sha256:69805d6b69f56eb05b62daea3a7dbd7aa44324ad1306445e05da8060232d00f4"},
 ]
 secretstorage = [
     {file = "SecretStorage-3.3.0-py3-none-any.whl", hash = "sha256:5c36f6537a523ec5f969ef9fad61c98eb9e017bc601d811e53aa25bece64892f"},
@@ -1464,15 +1354,12 @@ toml = [
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
 ]
 tqdm = [
-    {file = "tqdm-4.55.1-py2.py3-none-any.whl", hash = "sha256:b8b46036fd00176d0870307123ef06bb851096964fa7fc578d789f90ce82c3e4"},
-    {file = "tqdm-4.55.1.tar.gz", hash = "sha256:556c55b081bd9aa746d34125d024b73f0e2a0e62d5927ff0e400e20ee0a03b9a"},
+    {file = "tqdm-4.56.0-py2.py3-none-any.whl", hash = "sha256:4621f6823bab46a9cc33d48105753ccbea671b68bab2c50a9f0be23d4065cb5a"},
+    {file = "tqdm-4.56.0.tar.gz", hash = "sha256:fe3d08dd00a526850568d542ff9de9bbc2a09a791da3c334f3213d8d0bbbca65"},
 ]
 twine = [
     {file = "twine-3.3.0-py3-none-any.whl", hash = "sha256:2f6942ec2a17417e19d2dd372fc4faa424c87ee9ce49b4e20c427eb00a0f3f41"},
     {file = "twine-3.3.0.tar.gz", hash = "sha256:fcffa8fc37e8083a5be0728371f299598870ee1eccc94e9a25cef7b1dcfa8297"},
-]
-typesystem = [
-    {file = "typesystem-0.2.4.tar.gz", hash = "sha256:ba2bd10f1c5844d08dd8841e777bdee55bfca569bf21cb96cd0f91e0a4f66cd8"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.7.4.3-py2-none-any.whl", hash = "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"},
@@ -1522,8 +1409,8 @@ uvloop = [
     {file = "uvloop-0.14.0.tar.gz", hash = "sha256:123ac9c0c7dd71464f58f1b4ee0bbd81285d96cdda8bc3519281b8973e3a461e"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.2.2-py2.py3-none-any.whl", hash = "sha256:54b05fc737ea9c9ee9f8340f579e5da5b09fb64fd010ab5757eb90268616907c"},
-    {file = "virtualenv-20.2.2.tar.gz", hash = "sha256:b7a8ec323ee02fb2312f098b6b4c9de99559b462775bc8fe3627a73706603c1b"},
+    {file = "virtualenv-20.3.0-py2.py3-none-any.whl", hash = "sha256:205a7577275dd0d9223c730dd498e21a8910600085c3dee97412b041fc4b853b"},
+    {file = "virtualenv-20.3.0.tar.gz", hash = "sha256:7992b8de87e544a4ab55afc2240bf8388c4e3b5765d03784dad384bfdf9097ee"},
 ]
 webencodings = [
     {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
