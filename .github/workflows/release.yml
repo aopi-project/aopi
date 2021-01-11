@@ -8,7 +8,7 @@ on:
       - completed
       - requested
 jobs:
-  linter:
+  publisher:
     runs-on: ubuntu-latest
 
     steps:
