@@ -1,7 +1,12 @@
-name: "Pre-commit check"
+name: "Release aopi"
 
-on: [push]
-
+on:
+  workflow_run:
+    workflows: ["Pre-commit check"]
+    branches: [master]
+    types:
+      - completed
+      - requested
 jobs:
   linter:
     runs-on: ubuntu-latest
@@ -20,19 +25,6 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
       - name: Install python dependencies 👨🏻‍💻
         run: |
           pip install -U pip
@@ -44,6 +36,10 @@ jobs:
       - name: Install yarn dependencies 👨🏻‍💻
         run: yarn --cwd frontend/
 
-      - name: Run pre-commit 👀
-        run: poetry run pre-commit run -a
+      - name: Build frontend 🛠
+        run: yarn --cwd frontend/ generate
 
+      - name: Release package 🎉🎊🥳🎊🎉
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish --build
