@@ -1,17 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
-from starlette.requests import Request
 
 from aopi.models import AopiUser, database
 from aopi.models.auth_tokens import AuthTokens
 from aopi.models.users import AopiUserModel
-from aopi.routes.api.auth.dependencies import get_current_user_id
+from aopi.routes.api.auth.dependencies import get_current_user_id, get_sub_from_jwt
 from aopi.routes.api.auth.logic import (
     authenticate_user,
     create_access_token,
     create_refresh_token,
 )
-from aopi.routes.api.auth.schema import LoginRequestModel, LoginResponse
+from aopi.routes.api.auth.schema import LoginRequestModel, LoginResponse, RefreshRequest
 
 auth_router = APIRouter()
 
@@ -40,8 +39,28 @@ async def get_new_token_pair(user_info: LoginRequestModel) -> LoginResponse:
 
 
 @auth_router.post("/refresh", response_model=LoginResponse)
-async def refresh_token_pair(request: Request) -> None:
-    print(await request.body())
+async def refresh_token_pair(refresh_data: RefreshRequest) -> LoginResponse:
+    token_query = AuthTokens.select_query().where(
+        AuthTokens.refresh_token == refresh_data.refresh_token
+    )
+    token = await database.fetch_one(token_query)
+    incorrect_token = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Incorrect refresh token",
+    )
+    if token is None:
+        raise incorrect_token
+    user_id = get_sub_from_jwt(refresh_data.refresh_token, incorrect_token)
+
+    access_token = create_access_token(user_id=user_id)
+    refresh_token = create_refresh_token(user_id=user_id)
+    delete_query = AuthTokens.delete_query().where(AuthTokens.user_id == user_id)
+    await database.execute(delete_query)
+    add_query = AuthTokens.add(
+        access_token=access_token, refresh_token=refresh_token, user_id=user_id
+    )
+    await database.execute(add_query)
+    return LoginResponse(access_token=access_token, refresh_token=refresh_token)
 
 
 @auth_router.get(

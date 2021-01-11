@@ -37,6 +37,7 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    'nuxt-compress',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -80,6 +81,15 @@ export default {
       logout: '/',
       callback: '/login',
       home: '/',
+    },
+  },
+
+  'nuxt-compress': {
+    gzip: {
+      cache: true,
+    },
+    brotli: {
+      threshold: 10240,
     },
   },
 
