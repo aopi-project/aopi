@@ -42,7 +42,7 @@ jobs:
           POETRY_VIRTUALENVS_CREATE: false
 
       - name: Install yarn dependencies 👨🏻‍💻
-        run: yarn --cwd frontend/
+        run: yarn --cwd aopi-frontend/
 
       - name: Run pre-commit 👀
         run: poetry run pre-commit run -a

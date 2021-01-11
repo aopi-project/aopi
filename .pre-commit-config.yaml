@@ -48,9 +48,9 @@ repos:
   - repo: local
     hooks:
       - id: lint_frontend
-        name: Linting frontend
+        name: Linting aopi-frontend
         language: system
         pass_filenames: false
         require_serial: true
-        files: ^frontend/
-        entry: yarn --cwd frontend/ lint
+        files: ^aopi-frontend/
+        entry: yarn --cwd aopi-frontend/ lint

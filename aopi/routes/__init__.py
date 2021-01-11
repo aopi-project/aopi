@@ -16,6 +16,6 @@ def get_backend_info() -> Dict[str, Any]:
     """
     # Get current backend configuration.
 
-    This route is used by frontend application.
+    This route is used by aopi-frontend application.
     """
     return {"users_enabled": settings.enable_users}

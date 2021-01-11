@@ -34,10 +34,10 @@ jobs:
           POETRY_VIRTUALENVS_CREATE: false
 
       - name: Install yarn dependencies 👨🏻‍💻
-        run: yarn --cwd frontend/
+        run: yarn --cwd aopi-frontend/
 
-      - name: Build frontend 🛠
-        run: yarn --cwd frontend/ generate
+      - name: Build aopi-frontend 🛠
+        run: yarn --cwd aopi-frontend/ generate
 
       - name: Release package 🎉🎊🥳🎊🎉
         env:
