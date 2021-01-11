@@ -62,7 +62,7 @@ export default {
       },
     }
   },
-  mounted() {
+  beforeMount() {
     if (this.$auth.loggedIn || !this.$backend_settings.usersEnabled) {
       this.$router.push('/')
     }

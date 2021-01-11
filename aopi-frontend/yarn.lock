@@ -851,6 +851,11 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
+"@duckdoc/termynal@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@duckdoc/termynal/-/termynal-1.0.0.tgz#f02604a6864edf8ff83aeb43fa8c1c942d0aa88e"
+  integrity sha512-ZJHPyacpbhRZAacxxXQA/ZkF964/5JMVyk0YUKilkQFh4v7oZInbZxA91Ot2Qxd23qoNJ5JkNehqcRiv+zRhKA==
+
 "@eslint/eslintrc@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.2.2.tgz#d01fc791e2fc33e88a29d6f3dc7e93d0cd784b76"
