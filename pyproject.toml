@@ -4,8 +4,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "aopi"
-version = "0.1.9"
-description = ""
+version = "0.1.10"
+description = "Another one package index for humans"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
     { include = "aopi" },
@@ -13,6 +13,8 @@ packages = [
 include = [
     "aopi-frontend/dist/**/*"
 ]
+homepage = "https://github.com/aopi-project/aopi"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.9"

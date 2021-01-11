@@ -4,9 +4,8 @@ on:
   workflow_run:
     workflows: ["Pre-commit check"]
     branches: [master]
-    types:
-      - completed
-      - requested
+    types: [completed]
+
 jobs:
   publisher:
     runs-on: ubuntu-latest
