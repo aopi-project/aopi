@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "aopi"
-version = "0.1.10"
+version = "0.1.11"
 description = "Another one package index for humans"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
@@ -14,6 +14,7 @@ include = [
     "aopi-frontend/dist/**/*"
 ]
 homepage = "https://github.com/aopi-project/aopi"
+repository = "https://github.com/aopi-project/aopi"
 readme = "README.rst"
 
 [tool.poetry.dependencies]
@@ -39,7 +40,7 @@ psycopg2 = { version = "^2.8.6", optional = true }
 aiomysql = { version = "^0.0.21", optional = true }
 gunicorn = { version = "^20.0.4", optional = true }
 mysqlclient = { version = "^2.0.2", optional = true }
-aopi-python = {version = "^0.1.21", optional = true}
+aopi-python = { version = "^0.1.21", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"
