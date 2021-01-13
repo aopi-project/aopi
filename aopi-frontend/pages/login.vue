@@ -70,10 +70,13 @@ export default {
   methods: {
     submit_form() {
       this.logging_in = true
-      this.has_error = true
+      this.has_error = false
+      const bodyFormData = new FormData()
+      bodyFormData.append('username', this.user.username)
+      bodyFormData.append('password', this.user.password)
       this.$auth
         .loginWith('local', {
-          data: this.user,
+          data: bodyFormData,
         })
         .then(() => {
           this.$router.push('/')

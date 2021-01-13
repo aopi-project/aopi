@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "aopi"
-version = "0.1.11"
+version = "0.1.13"
 description = "Another one package index for humans"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [

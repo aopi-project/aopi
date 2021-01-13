@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Form, HTTPException
 from starlette import status
 
 from aopi.models import AopiUser, database
@@ -10,21 +12,23 @@ from aopi.routes.api.auth.logic import (
     create_access_token,
     create_refresh_token,
 )
-from aopi.routes.api.auth.schema import LoginRequestModel, LoginResponse, RefreshRequest
+from aopi.routes.api.auth.schema import LoginResponse, RefreshRequest
 
 auth_router = APIRouter()
 
 
 @auth_router.post("/login", response_model=LoginResponse)
-async def get_new_token_pair(user_info: LoginRequestModel) -> LoginResponse:
+async def get_new_token_pair(
+    username: Optional[str] = Form(None), password: Optional[str] = Form(None)
+) -> LoginResponse:
     unauthorized = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    if user_info.username is None or user_info.password is None:
+    if username is None or password is None:
         raise unauthorized
-    user = await authenticate_user(user_info.username, user_info.password)
+    user = await authenticate_user(username, password)
     if user is None:
         raise unauthorized
     access_token = create_access_token(user_id=user.id)

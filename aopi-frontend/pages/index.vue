@@ -1,5 +1,6 @@
 <template>
   <div class="w-100 search_page">
+    <PluginChecker />
     <v-autocomplete
       flat
       rounded
@@ -36,7 +37,9 @@
 </template>
 
 <script>
+import PluginChecker from '~/components/plugin_checker'
 export default {
+  components: { PluginChecker },
   data() {
     return {
       isLoading: false,
@@ -57,22 +60,13 @@ export default {
       this.items = response.data
     },
   },
-  async beforeMount() {
-    if (this.$backend_settings.usersEnabled && !this.$auth.loggedIn) {
-      await this.$router.push('/login')
-    }
-    const response = await this.$axios.get('/languages')
-    if (response.data.length < 1) {
-      await this.$router.push('/no_plugins')
-    }
-  },
   methods: {
     async logout() {
       await this.$auth.logout()
       await this.$router.push('/login')
     },
     search(name) {
-      this.$router.push(`/packages?q=${name}`)
+      this.$router.push(`/packages?q=${name || ''}`)
     },
     raw_search() {
       this.search(this.searchTerm)
