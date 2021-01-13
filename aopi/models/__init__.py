@@ -11,3 +11,4 @@ __all__ = ["create_db", "database", "AopiUser", "AopiRole", "AopiUserRole"]
 def create_db() -> None:
     engine = sqlalchemy.create_engine(str(database.url))
     metadata.create_all(engine)
+    engine.dispose()

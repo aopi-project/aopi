@@ -3,17 +3,20 @@ from typing import Optional
 from aopi_index_builder import AopiContextBase, PluginManager
 
 from aopi.models import AopiUser, AopiUserRole, database, metadata
-from aopi.models.dict_proxy import DictProxy
+from aopi.models.users import AopiUserModel
 from aopi.settings import settings
 from aopi.utils.passwords import verify_password
 
 
 async def get_user_id(username: str, password: str) -> Optional[int]:
     query = AopiUser.find(username, AopiUser.id, AopiUser.password)
-    user = DictProxy(await database.fetch_one(query))
-    if user.is_none():
+    user = await database.fetch_one(query)
+    if user is None:
         return None
-    if not await verify_password(user.password, password):
+    user_model = AopiUserModel.from_orm(user)
+    if user_model.password is None:
+        return None
+    if not await verify_password(user_model.password, password):
         return None
     return user.id
 

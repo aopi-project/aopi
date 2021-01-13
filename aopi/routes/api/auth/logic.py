@@ -38,6 +38,8 @@ async def authenticate_user(username: str, password: str) -> Optional[AopiUserMo
     if len(found_users) != 1:
         return None
     user = AopiUserModel.from_orm(found_users[0])
+    if user.password is None:
+        return None
     if not await verify_password(user.password, password):
         return None
     return user

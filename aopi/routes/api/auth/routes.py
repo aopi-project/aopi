@@ -31,6 +31,8 @@ async def get_new_token_pair(
     user = await authenticate_user(username, password)
     if user is None:
         raise unauthorized
+    if user.id is None:
+        raise unauthorized
     access_token = create_access_token(user_id=user.id)
     refresh_token = create_refresh_token(user_id=user.id)
     delete_query = AuthTokens.delete_query().where(AuthTokens.user_id == user.id)

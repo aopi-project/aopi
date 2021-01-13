@@ -4,8 +4,8 @@ from loguru import logger
 
 from aopi.application.plugin_manager import plugin_manager
 from aopi.models import AopiRole, AopiUser, AopiUserRole
-from aopi.models.dict_proxy import DictProxy
 from aopi.models.meta import database
+from aopi.models.roles import AopiRoleModel
 from aopi.settings import settings
 from aopi.utils.passwords import hash_password
 
@@ -30,7 +30,9 @@ async def create_missing_roles() -> None:
     Find missing roles in database and add them.
 
     """
-    existing_roles = map(DictProxy, await database.fetch_all(AopiRole.select_query()))
+    existing_roles = map(
+        AopiRoleModel.from_orm, await database.fetch_all(AopiRole.select_query())
+    )
     existing_mapping = defaultdict(list)
     for role in existing_roles:
         existing_mapping[role.plugin_name].append(role.role)
@@ -56,7 +58,7 @@ async def add_roles_to_admin() -> None:
     )
     roles = [
         {"role_id": role.id, "user_id": user_id}
-        for role in map(DictProxy, await database.fetch_all(missing_roles))
+        for role in map(AopiRoleModel.from_orm, await database.fetch_all(missing_roles))
     ]
     logger.debug(f"Found {len(roles)} missing roles for admin user")
     await database.execute_many(AopiUserRole.insert_query(), roles)

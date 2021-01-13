@@ -1,4 +1,7 @@
+from typing import Optional
+
 import sqlalchemy as sa
+import ujson
 from pydantic.main import BaseConfig, BaseModel
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -19,9 +22,11 @@ class AopiUser(Base):
 
 
 class AopiUserModel(BaseModel):
-    id: int
-    username: str
-    password: str
+    id: Optional[int]
+    username: Optional[str]
+    password: Optional[str]
 
     class Config(BaseConfig):
         orm_mode = True
+        json_loads = ujson.loads
+        json_dumps = ujson.dumps
