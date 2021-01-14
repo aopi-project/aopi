@@ -14,7 +14,7 @@
       </v-toolbar>
       <v-row class="mt-3 ml-1 mr-1">
         <v-col>
-          <h2>Package Description</h2>
+          <h2 class="grey_head">Package Description</h2>
           <div
             v-if="
               packageInfo.description === null ||
@@ -23,12 +23,22 @@
           >
             No description provided
           </div>
-          <pre v-else>
- {{ packageInfo.description }}
-          </pre>
+          <div v-else>
+            <vue-markdown
+              v-if="packageInfo.description_format === 'md'"
+              :source="packageInfo.description"
+            >
+            </vue-markdown>
+            <VueRst v-if="packageInfo.description_format === 'rst'">
+              {{ packageInfo.description }}
+            </VueRst>
+            <pre v-if="packageInfo.description_format === 'text'">
+    {{ packageInfo.description }}
+            </pre>
+          </div>
         </v-col>
         <v-col>
-          <h2>Package versions</h2>
+          <h2 class="grey_head">Package versions</h2>
           <v-expansion-panels inset>
             <v-expansion-panel
               v-for="version in packageVersions"
@@ -56,7 +66,7 @@
                   </v-avatar>
                   This version was yanked
                 </v-banner>
-                <h3>Version info</h3>
+                <h3 class="grey_head">Version info</h3>
                 <p
                   v-for="(property, name) in filtered_metadata(
                     version.metadata
@@ -75,8 +85,14 @@
 </template>
 
 <script>
+import VueMarkdown from 'vue-markdown'
+import VueRst from '@/components/vue_rst'
 export default {
   name: 'PackageInfo',
+  components: {
+    VueRst,
+    VueMarkdown,
+  },
   props: {
     activator: { type: Boolean, required: true },
     packageInfo: {
@@ -103,3 +119,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.grey_head {
+  color: grey;
+}
+</style>
