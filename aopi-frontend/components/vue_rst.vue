@@ -12,8 +12,7 @@ export default {
   name: 'VueRst',
   mounted() {
     const slotData = this.$refs.rst.textContent.trim()
-    const htm = rst2html(slotData)
-    this.$refs.rst.innerHTML = htm
+    this.$refs.rst.innerHTML = rst2html(slotData)
   },
 }
 </script>

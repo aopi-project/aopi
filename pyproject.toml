@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "aopi"
-version = "0.1.15"
+version = "0.1.16"
 description = "Another one package index for humans"
 authors = ["Pavel Kirilin <win10@list.ru>"]
 packages = [
@@ -45,6 +45,7 @@ aopi-python = { version = "^0.1.21", optional = true }
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"
 pre-commit = "^2.9.3"
+flake8 = "^3.8.4"
 
 [tool.poetry.extras]
 unix = ["gunicorn", "uvloop"]

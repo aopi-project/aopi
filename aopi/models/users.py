@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import sqlalchemy as sa
 import ujson
@@ -19,6 +19,12 @@ class AopiUser(Base):
     @classmethod
     def find(cls, username: str, *fields: InstrumentedAttribute) -> sa.sql.Select:
         return cls.select_query(*fields).where(AopiUser.username == username)
+
+    @classmethod
+    def get_id(cls, user: Union[str, int]) -> Union[int, sa.sql.Select]:
+        if isinstance(user, int):
+            return user
+        return cls.find(user, cls.id)
 
 
 class AopiUserModel(BaseModel):

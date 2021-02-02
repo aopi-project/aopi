@@ -19,10 +19,7 @@ class AopiUserRole(Base):
     def get_user_roles(
         cls, user: Union[str, int], *fields: InstrumentedAttribute
     ) -> sa.sql.Select:
-        if isinstance(user, int):
-            user_id = user
-        else:
-            user_id = AopiUser.find(user, AopiUser.id)
+        user_id = AopiUser.get_id(user)
         return AopiRole.select_query(*fields).where(
             AopiRole.id.in_(
                 cls.select_query(AopiUserRole.role_id).where(
